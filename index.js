@@ -10,6 +10,9 @@ const PlanimetryGenerator = require("./src/engine/generators/geometry/Planimetry
 const StereometryGenerator = require("./src/engine/generators/geometry/StereometryGenerator");
 const StatisticsGenerator = require("./src/engine/generators/statistics/StatisticsGenerator");
 const FunctionsGeneralGenerator = require("./src/engine/generators/functions/FunctionsGeneralGenerator");
+const CombinatoricsGenerator = require("./src/engine/generators/combinatorics/CombinatoricsGenerator");
+const TrigonometryGenerator = require("./src/engine/generators/trigonometry/TrigonometryGenerator");
+const ProbabilityGenerator = require("./src/engine/generators/statistics/ProbabilityGenerator");
 const ExamGenerator = require("./src/engine/generators/ExamGenerator");
 
 const problems = require("./problems.json");
@@ -270,3 +273,13 @@ app.get("/api/v2/exam/full", (req, res) => {
     res.status(500).json({ error: "Błąd generowania egzaminu" });
   }
 });
+
+app.get("/api/v2/generator/combinatorics", (req, res) =>
+  res.json(new CombinatoricsGenerator(req.query.difficulty).generate()),
+);
+app.get("/api/v2/generator/trigonometry", (req, res) =>
+  res.json(new TrigonometryGenerator(req.query.difficulty).generate()),
+);
+app.get("/api/v2/generator/probability", (req, res) =>
+  res.json(new ProbabilityGenerator(req.query.difficulty).generate()),
+);

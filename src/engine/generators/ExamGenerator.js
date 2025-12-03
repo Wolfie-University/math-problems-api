@@ -8,6 +8,9 @@ const PlanimetryGenerator = require("./geometry/PlanimetryGenerator");
 const StereometryGenerator = require("./geometry/StereometryGenerator");
 const AnalyticGenerator = require("./geometry/AnalyticGenerator");
 const StatisticsGenerator = require("./statistics/StatisticsGenerator");
+const TrigonometryGenerator = require("./trigonometry/TrigonometryGenerator");
+const CombinatoricsGenerator = require("./combinatorics/CombinatoricsGenerator");
+const ProbabilityGenerator = require("./statistics/ProbabilityGenerator");
 
 class ExamGenerator {
   constructor() {
@@ -22,6 +25,9 @@ class ExamGenerator {
       new StereometryGenerator(),
       new AnalyticGenerator(),
       new StatisticsGenerator(),
+      new TrigonometryGenerator(),
+      new CombinatoricsGenerator(),
+      new ProbabilityGenerator(),
     ];
   }
 
@@ -35,11 +41,14 @@ class ExamGenerator {
       { generator: AlgebraGenerator, count: 4 }, // Liczby rzeczywiste (potęgi, logarytmy...)
       { generator: FunctionsGeneralGenerator, count: 2 }, // Własności funkcji
       { generator: QuadraticGenerator, count: 3 }, // Funkcja kwadratowa
-      { generator: SequencesGenerator, count: 3 }, // Ciągi
+      { generator: SequencesGenerator, count: 2 }, // Ciągi
+      { generator: TrigonometryGenerator, count: 3 }, // NOWE
       { generator: AnalyticGenerator, count: 3 }, // Geometria analityczna
       { generator: PlanimetryGenerator, count: 4 }, // Planimetria
-      { generator: StereometryGenerator, count: 3 }, // Stereometria
+      { generator: StereometryGenerator, count: 1 }, // Stereometria
+      { generator: CombinatoricsGenerator, count: 2 }, // NOWE
       { generator: StatisticsGenerator, count: 3 }, // Statystyka/Prawdopodobieństwo
+      { generator: ProbabilityGenerator, count: 2 }, // NOWE
       { generator: OptimizationGenerator, count: 1 }, // Zadanie optymalizacyjne (otwarte)
     ];
 
