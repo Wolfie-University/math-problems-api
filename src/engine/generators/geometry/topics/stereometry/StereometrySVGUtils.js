@@ -50,14 +50,14 @@ class StereometrySVGUtils {
         line(D.x, D.y, D1.x, D1.y, true);
 
       if (params.type === "cuboid_angle") {
-        content += line(B.x, B.y, D.x, D.y, true, "blue"); // Przekątna podstawy
-        content += line(B.x, B.y, D1.x, D1.y, false, "red"); // Przekątna bryły
-        content += line(D.x, D.y, D1.x, D1.y, true, "blue"); // Wysokość
+        content += line(B.x, B.y, D.x, D.y, true, "blue"); // przekatna podstawy
+        content += line(B.x, B.y, D1.x, D1.y, false, "red"); // przekatna bryly
+        content += line(D.x, D.y, D1.x, D1.y, true, "blue"); // wysokosc
         content += text(B.x - 20, B.y - 5, "α");
       } else if (params.type === "cuboid_diagonal") {
-        content += line(A.x, A.y, C1.x, C1.y, true, "red"); // Przekątna
+        content += line(A.x, A.y, C1.x, C1.y, true, "red"); // przekatna
       } else {
-        content += line(A.x, A.y, C1.x, C1.y, false, "red"); // Przekątna sześcianu
+        content += line(A.x, A.y, C1.x, C1.y, false, "red"); // przekatna szescianu
       }
     } else if (
       params.type === "pyramid_square" ||

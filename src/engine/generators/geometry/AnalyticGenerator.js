@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const LinesGenerator = require("./topics/analytic/LinesGenerator");
 const PointsAndSegmentsGenerator = require("./topics/analytic/PointsAndSegmentsGenerator");
 const ShapesCoordsGenerator = require("./topics/analytic/ShapesCoordsGenerator");
@@ -17,30 +16,30 @@ class AnalyticGenerator extends BaseGenerator {
   generate() {
     const variants = [
       // Lines
-      "line_equation_2p", // Równanie prostej przez 2 punkty
-      "line_parallel", // Prosta równoległa
-      "line_perpendicular", // Prosta prostopadła
-      "line_parameter_m", // Parametr m
-      "intersection_point", // Punkt przecięcia
-      "slope_angle", // Kąt nachylenia
-      "point_on_line_param", // Punkt z parametrem na prostej
-      "intersection_with_axes", // Przecięcie z osiami
-      "perpendicular_coeff", // Współczynnik prostopadłej
-      "perpendicular_bisector", // Symetralna odcinka
+      "line_equation_2p", // rownanie prostej przez 2 punkty
+      "line_parallel", // prosta rownolegla
+      "line_perpendicular", // prosta prostopadla
+      "line_parameter_m", // parametr m
+      "intersection_point", // punkt przeciecia
+      "slope_angle", // kat nachylenia
+      "point_on_line_param", // punkt z parametrem na prostej
+      "intersection_with_axes", // przeciecie z osiami
+      "perpendicular_coeff", // wspolczynnik prostopadlej
+      "perpendicular_bisector", // symetralna odcinka
 
       // Points & Segments
-      "midpoint_length", // Środek i długość
-      "missing_endpoint", // Brakujący koniec
-      "distance_unknown_coord", // Długość z niewiadomą
-      "point_symmetry", // Symetria punktu
-      "collinear_points", // Współliniowość
+      "midpoint_length", // srodek i dlugosc
+      "missing_endpoint", // brakujacy koniec
+      "distance_unknown_coord", // dlugosc z niewiadoma
+      "point_symmetry", // symetria punktu
+      "collinear_points", // wspolliniowosc
 
       // Shapes & Circles
-      "circle_equation", // Równanie okręgu
-      "circle_tangent_to_axis", // Okrąg styczny do osi
-      "radius_from_equation", // Promień z równania
-      "parallelogram_vertex", // Czwarty wierzchołek
-      "triangle_area_coords", // Pole trójkąta
+      "circle_equation", // rownanie okregu
+      "circle_tangent_to_axis", // okrag styczny do osi
+      "radius_from_equation", // promien z rownania
+      "parallelogram_vertex", // czwarty wierzcholek
+      "triangle_area_coords", // pole trojkata
     ];
 
     const selectedVariant = MathUtils.randomElement(variants);

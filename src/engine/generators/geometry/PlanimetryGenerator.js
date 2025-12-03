@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const TrianglesGenerator = require("./topics/planimetry/TrianglesGenerator");
 const CirclesGenerator = require("./topics/planimetry/CirclesGenerator");
 const QuadrilateralsGenerator = require("./topics/planimetry/QuadrilateralsGenerator");
@@ -27,7 +26,7 @@ class PlanimetryGenerator extends BaseGenerator {
       "inradius_right_triangle",
       "circumradius_right_triangle",
       "isosceles_angles",
-      "right_triangle_trig", // Legacy but valid
+      "right_triangle_trig",
 
       // Circles
       "circle_angles",
@@ -71,7 +70,7 @@ class PlanimetryGenerator extends BaseGenerator {
       case "isosceles_angles":
         return this.triGen.generateIsoscelesAngles();
       case "right_triangle_trig":
-        return this.triGen.generateTrigProblem(); // Legacy name
+        return this.triGen.generateTrigProblem();
 
       // Circles
       case "circle_angles":

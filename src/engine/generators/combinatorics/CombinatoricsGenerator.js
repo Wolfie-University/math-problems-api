@@ -15,25 +15,25 @@ class CombinatoricsGenerator extends BaseGenerator {
 
   generate() {
     const variants = [
-      "numbers_rule", // Liczby n-cyfrowe parzyste/podzielne
-      "distinct_digits", // Liczby o różnych cyfrach
-      "numbers_from_set", // Liczby z małego zbioru cyfr
-      "numbers_sum_digits", // Liczby o sumie cyfr X
-      "codes_mixed", // Kody (litery i cyfry)
+      "numbers_rule", // n-cyfrowe parzyste/podzielne
+      "distinct_digits", // o roznych cyfrach
+      "numbers_from_set", // z malego zbioru cyfr
+      "numbers_sum_digits", // o sumie cyfr X
+      "codes_mixed", // kody (litery i cyfry)
 
-      "queue_perm", // Kolejka (n!)
-      "flag_coloring", // Flagi (wariacje)
-      "seating_constraint", // Ustawienia z warunkiem
+      "queue_perm", // kolejka (n!)
+      "flag_coloring", // flagi (wariacje)
+      "seating_constraint", // ustawienia z warunkiem
 
-      "clothing_sets", // Zestawy ubrań/menu (mnożenie zbiorów)
-      "handshakes", // Uściski dłoni (C(n,2))
-      "team_selection", // Delegacja (C(n,3))
+      "clothing_sets", // zestawy ubran/menu (mnozenie zbiorow)
+      "handshakes", // usciski dloni (C(n,2))
+      "team_selection", // delegacja (C(n,3))
     ];
 
     const selectedVariant = MathUtils.randomElement(variants);
 
     switch (selectedVariant) {
-      // PROSTE REGUŁY (LICZBY, KODY)
+      // LICZBY, KODY
       case "numbers_rule":
         return this.simpleGen.generateNumbersRule();
       case "distinct_digits":

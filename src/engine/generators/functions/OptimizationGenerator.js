@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const EconomicOptimizationGenerator = require("./topics/optimization/EconomicOptimizationGenerator");
 const GeometricOptimizationGenerator = require("./topics/optimization/GeometricOptimizationGenerator");
 
@@ -14,11 +13,11 @@ class OptimizationGenerator extends BaseGenerator {
 
   generate() {
     const variants = [
-      "revenue", // Ekonomiczne: Bilet/Klocki (przychód)
-      "density", // Ekonomiczne: Sadownik (zagęszczenie)
-      "fencing_3_pens", // Geometryczne: Ogrodzenie 3 wybiegów (pole)
-      "cuboid_surface", // Geometryczne: Prostopadłościan (suma krawędzi)
-      "trapezoid_window", // Geometryczne: Okno trapezowe (pole)
+      "revenue", // ekonomiczne: bilet/klocki
+      "density", // ekonomiczne: sadownik
+      "fencing_3_pens", // geometryczne: ogrodzenie 3 wybiegow (pole)
+      "cuboid_surface", // geometryczne: prostopadloscian (suma krawedzi)
+      "trapezoid_window", // geometryczne: okno trapezowe (pole)
     ];
 
     const selectedVariant = MathUtils.randomElement(variants);

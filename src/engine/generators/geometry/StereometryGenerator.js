@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const CubesGenerator = require("./topics/stereometry/CubesGenerator");
 const SolidsOfRevolutionGenerator = require("./topics/stereometry/SolidsOfRevolutionGenerator");
 const PyramidsAndPrismsGenerator = require("./topics/stereometry/PyramidsAndPrismsGenerator");
@@ -18,19 +17,19 @@ class StereometryGenerator extends BaseGenerator {
 
   generate() {
     const variants = [
-      "cube_features", // Sześcian
-      "cuboid_angle", // Kąt w prostopadłościanie
-      "cuboid_diagonal", // Przekątna prostopadłościanu
-      "cone_basics", // Stożek (Pitagoras)
-      "cylinder_volume", // Walec (przekrój)
-      "cylinder_section_diagonal", // Przekątna przekroju walca
-      "sphere_calc", // Kula
-      "pyramid_square", // Ostrosłup praw. czworokątny
-      "pyramid_face_angle", // Kąt ściany bocznej ostrosłupa
-      "pyramid_triangle", // Ostrosłup praw. trójkątny
-      "tetrahedron_regular", // Czworościan foremny
-      "prism_triangle", // Graniastosłup praw. trójkątny
-      "solid_scaling", // Skalowanie brył
+      "cube_features", // szescian
+      "cuboid_angle", // kat w prostopadloscianie
+      "cuboid_diagonal", // przekatna prostopadloscianu
+      "cone_basics", // stozek (Pitagoras)
+      "cylinder_volume", // walec (przekroj)
+      "cylinder_section_diagonal", // przekatna przekroju walca
+      "sphere_calc", // kula
+      "pyramid_square", // ostroslup praw. czwarokatny
+      "pyramid_face_angle", // kat sciany bocznej ostroslupa
+      "pyramid_triangle", // ostroslup praw. trojkatny
+      "tetrahedron_regular", // czwaroscian foremny
+      "prism_triangle", // graniastoslup praw. trojkatny
+      "solid_scaling", // skalowanie bryl
     ];
 
     const selectedVariant = MathUtils.randomElement(variants);

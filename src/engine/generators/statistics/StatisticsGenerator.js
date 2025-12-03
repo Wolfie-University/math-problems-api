@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const MeasuresGenerator = require("./topics/statistics/MeasuresGenerator");
 const ChartsGenerator = require("./topics/statistics/ChartsGenerator");
 const TheoryStatsGenerator = require("./topics/statistics/TheoryStatsGenerator");
@@ -16,16 +15,16 @@ class StatisticsGenerator extends BaseGenerator {
 
   generate() {
     const variants = [
-      "stats_basic", // Średnia/Mediana z listy
-      "stats_mode", // Dominanta
-      "weighted_mean", // Średnia ważona
-      "std_deviation", // Odchylenie standardowe
-      "missing_number_mean", // Brakująca liczba do średniej
-      "median_with_param", // Mediana z x
-      "mean_after_adding", // Średnia po dopisaniu liczby
-      "stats_chart", // Średnia z wykresu
-      "frequency_table_mean", // Średnia z tabeli
-      "std_dev_properties", // Własności odchylenia
+      "stats_basic", // srednia/mediana z listy
+      "stats_mode", // dominanta
+      "weighted_mean", // srednia wazona
+      "std_deviation", // odchylenie standardowe
+      "missing_number_mean", // brakujaca liczba do sredniej
+      "median_with_param", // mediana z x
+      "mean_after_adding", // srednia po dopisaniu liczby
+      "stats_chart", // srednia z wykresu
+      "frequency_table_mean", // srednia z tabeli
+      "std_dev_properties", // wlasnosci odchylenia
     ];
 
     const selectedVariant = MathUtils.randomElement(variants);

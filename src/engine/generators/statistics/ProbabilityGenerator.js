@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const DiceAndCoinsGenerator = require("./topics/probability/DiceAndCoinsGenerator");
 const UrnsAndCardsGenerator = require("./topics/probability/UrnsAndCardsGenerator");
 const SetsAndNumbersGenerator = require("./topics/probability/SetsAndNumbersGenerator");
@@ -19,26 +18,26 @@ class ProbabilityGenerator extends BaseGenerator {
   generate() {
     const variants = [
       // Dice & Coins
-      "dice_sum", // Suma oczek
+      "dice_sum", // suma oczek
       "dice_comparison", // x1 > x2
-      "dice_product", // Iloczyn oczek
-      "coins_dynamic", // Monety
+      "dice_product", // iloczyn oczek
+      "coins_dynamic", // monety
 
       // Urns & Cards
-      "urn_dynamic", // Kule
-      "drawing_without_replacement", // Klasa/Delegacja
-      "cards_dynamic", // Karty
+      "urn_dynamic", // kule
+      "drawing_without_replacement", // klasa/delegacja
+      "cards_dynamic", // karty
 
       // Sets & Numbers
-      "two_sets_sum", // Dwa zbiory
-      "drawing_with_replacement", // Ze zwracaniem
-      "divisibility_set_dynamic", // Podzielność
-      "draw_number_properties", // Własności liczb
+      "two_sets_sum", // dwa zbiory
+      "drawing_with_replacement", // ze zwracaniem
+      "divisibility_set_dynamic", // podzielnosc
+      "draw_number_properties", // wlasnosci liczb
 
       // Theory
       "union_formula", // P(A u B)
       "complementary_event", // P(A')
-      "geometry_1d", // Geometria
+      "geometry_1d", // geometria
     ];
 
     const selectedVariant = MathUtils.randomElement(variants);
@@ -80,7 +79,6 @@ class ProbabilityGenerator extends BaseGenerator {
       case "geometry_1d":
         return this.theoryGen.generateGeometry1D();
 
-      // Mapowanie starych nazw (Legacy)
       case "dice":
         return this.diceCoinsGen.generateDiceSum();
       case "coins":

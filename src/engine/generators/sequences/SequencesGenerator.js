@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Import sub-generators
 const ArithmeticSequencesGenerator = require("./topics/ArithmeticSequencesGenerator");
 const GeometricSequencesGenerator = require("./topics/GeometricSequencesGenerator");
 const GeneralSequencesGenerator = require("./topics/GeneralSequencesGenerator");
@@ -19,22 +18,22 @@ class SequencesGenerator extends BaseGenerator {
       // Arithmetic
       "arithmetic_x", // (a, x, b) arytmetyczny
       "arithmetic_params", // a_k i a_m -> r
-      "arithmetic_sum", // Suma n wyrazów arytm
+      "arithmetic_sum", // suma n wyrazow arytm
       "arithmetic_algebraic", // (x-1, x+2, 2x) arytmetyczny -> x
 
       // Geometric
       "geometric_x", // (a, x, b) geometryczny
-      "geometric_sum", // Suma n wyrazów geom
+      "geometric_sum", // suma n wyrazow geom
       "geometric_ratio_dist", // a_2=27, a_5=1 -> q
       "geometric_algebraic", // (x, x+2, x+6) geometryczny -> x
 
       // General
       "nth_term", // a_n ze wzoru
-      "which_term", // Którym wyrazem jest X
-      "count_terms", // Ile wyrazów < X
-      "sequence_monotonicity", // Czy an = -2n+5 jest rosnący?
-      "quadratic_sequence_pos", // Ile wyrazów an = -n^2... jest dodatnich?
-      "sequence_average", // Średnia wyrazów ciągu
+      "which_term", // ktorym wyrazem jest x
+      "count_terms", // ile wyrazow < x
+      "sequence_monotonicity", // czy an = -2n+5 jest rosnacy?
+      "quadratic_sequence_pos", // ile wyrazow an = -n^2... jest dodatnich?
+      "sequence_average", // srednia wyrazow ciagu
       "sum_formula_analysis", // Sn = n^2 - n -> a_n?
     ];
 
