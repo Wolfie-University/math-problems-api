@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const QuadraticGenerator = require("./src/engine/generators/functions/QuadraticGenerator");
 const OptimizationGenerator = require("./src/engine/generators/functions/OptimizationGenerator");
+const AnalyticGenerator = require("./src/engine/generators/geometry/AnalyticGenerator");
 
 const problems = require("./problems.json");
 
@@ -165,5 +166,17 @@ app.get("/api/v2/generator/optimization", (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Błąd generatora optymalizacji" });
+  }
+});
+
+app.get("/api/v2/generator/analytic", (req, res) => {
+  try {
+    const difficulty = req.query.difficulty || "medium";
+    const generator = new AnalyticGenerator(difficulty);
+    const problem = generator.generate();
+    res.json(problem);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Błąd generatora geometrii" });
   }
 });
