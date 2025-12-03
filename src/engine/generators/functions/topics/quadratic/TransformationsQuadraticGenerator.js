@@ -1,12 +1,8 @@
 const BaseGenerator = require("../../../../core/BaseGenerator");
-const MathUtils = require("../../../../utils/MathUtils");
 const SVGUtils = require("../../../../utils/SVGUtils");
 
 class TransformationsQuadraticGenerator extends BaseGenerator {
   generateShiftParabolaProblem() {
-    const a = 1,
-      p = -3,
-      q = 2;
     const formulaNew = `x^2 + 6x + 11`;
     return this.createResponse({
       question: `$$f(x)=x^2$$ przesunięto o $$v=[-3, 2]$$. Nowy wzór:`,

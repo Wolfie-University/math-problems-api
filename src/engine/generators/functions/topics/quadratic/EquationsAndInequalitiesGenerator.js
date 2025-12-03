@@ -117,9 +117,6 @@ class EquationsAndInequalitiesGenerator extends BaseGenerator {
   }
 
   generateProductToGeneralProblem() {
-    const a = 1,
-      x1 = -1,
-      x2 = 3;
     const b = -2,
       c = -3;
     return this.createResponse({

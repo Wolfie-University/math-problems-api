@@ -209,7 +209,6 @@ class TrianglesGenerator extends BaseGenerator {
     });
   }
 
-  // Legacy (można przenieść do Trig, ale tutaj jest jako geometria)
   generateTrigProblem() {
     const [a, b, c] = MathUtils.randomElement([
       [3, 4, 5],

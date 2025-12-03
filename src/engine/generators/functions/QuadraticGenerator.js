@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Sub-generators
 const VertexAndRootsGenerator = require("./topics/quadratic/VertexAndRootsGenerator");
 const PropertiesGenerator = require("./topics/quadratic/PropertiesGenerator");
 const EquationsAndInequalitiesGenerator = require("./topics/quadratic/EquationsAndInequalitiesGenerator");

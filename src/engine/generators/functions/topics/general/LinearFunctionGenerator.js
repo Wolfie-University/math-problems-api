@@ -54,7 +54,6 @@ class LinearFunctionGenerator extends BaseGenerator {
 
   generateLinearMonotonicityParam() {
     const coeffM = MathUtils.randomElement([2, 3, 4, -2, -3]);
-    const constVal = MathUtils.randomInt(-6, 6);
     const validConst =
       MathUtils.randomInt(1, 4) *
       Math.abs(coeffM) *
@@ -111,7 +110,6 @@ class LinearFunctionGenerator extends BaseGenerator {
     });
   }
 
-  // --- HELPERY ---
   formatLinear(a, b) {
     const aS = this.fractionToLatex(a);
     const xPart = aS === "1" ? "x" : aS === "-1" ? "-x" : `${aS}x`;

@@ -121,7 +121,7 @@ class EconomicOptimizationGenerator extends BaseGenerator {
     const scenario = {
       subject: "drzew",
       unit: "szt.",
-      template: (fruits, trees, stepFruits, stepTrees, subject) =>
+      template: (fruits, trees, stepFruits, subject) =>
         `Sadownik zauważył, że jeśli posadzi ${trees} ${subject} na hektar, to z każdego zbierze średnio ${fruits} kg owoców. ` +
         `Każde dodatkowe posadzone drzewo (powyżej liczby ${trees}) powoduje zmniejszenie plonu z każdego drzewa o ${stepFruits} kg. ` +
         `Ile drzew należy dosadzić, aby łączny plon z sadu był największy?`,
@@ -170,7 +170,7 @@ class EconomicOptimizationGenerator extends BaseGenerator {
     });
   }
 
-  generateParabolaSVG(startP, startS, step, optX, maxRev, isDensity = false) {
+  generateParabolaSVG() {
     const size = 300;
     const center = size / 2;
     let pathData = "";

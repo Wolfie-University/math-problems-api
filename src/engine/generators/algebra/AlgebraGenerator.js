@@ -1,7 +1,6 @@
 const BaseGenerator = require("../../core/BaseGenerator");
 const MathUtils = require("../../utils/MathUtils");
 
-// Sub-generators
 const LogarithmsGenerator = require("./topics/LogarithmsGenerator");
 const BasicOperationsGenerator = require("./topics/BasicOperationsGenerator");
 const FormulasGenerator = require("./topics/FormulasGenerator");
@@ -11,7 +10,6 @@ const IntervalsGenerator = require("./topics/IntervalsGenerator");
 class AlgebraGenerator extends BaseGenerator {
   constructor(difficulty) {
     super(difficulty);
-    // Initialize sub-generators
     this.logGen = new LogarithmsGenerator(difficulty);
     this.basicGen = new BasicOperationsGenerator(difficulty);
     this.formulaGen = new FormulasGenerator(difficulty);
@@ -40,7 +38,6 @@ class AlgebraGenerator extends BaseGenerator {
 
     const selectedVariant = MathUtils.randomElement(variants);
 
-    // Delegation logic
     switch (selectedVariant) {
       case "log_formula":
         return this.logGen.generateLogProblem();

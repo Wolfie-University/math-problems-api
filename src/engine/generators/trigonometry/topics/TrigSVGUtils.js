@@ -56,7 +56,6 @@ class TrigSVGUtils {
         </svg>`;
     }
     if (params.type === "isosceles" || params.type === "trapezoid_h") {
-      // Simplified generic triangle for these
       return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="border:1px solid #ddd; background:#fff">
             <polygon points="50,250 250,250 150,150" stroke="black" fill="none" stroke-width="2"/>
             <text x="70" y="240">α</text>

@@ -104,8 +104,6 @@ class BasicOperationsGenerator extends BaseGenerator {
     const resNum = 2 * m + n;
     const resDen = 2 * n;
 
-    // Funkcja GCD jest potrzebna lokalnie lub importowana,
-    // tutaj zaimplementujemy prostą wersję inline dla czystości
     const gcd = (x, y) => (y ? gcd(y, x % y) : x);
 
     const common = gcd(resNum, resDen);

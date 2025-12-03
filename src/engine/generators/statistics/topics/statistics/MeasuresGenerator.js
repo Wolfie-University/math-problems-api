@@ -157,7 +157,7 @@ class MeasuresGenerator extends BaseGenerator {
     const currentSum = known.reduce((a, b) => a + b, 0);
     const x = targetSum - currentSum;
     const allNums = [...known, "x"];
-    // Shuffle
+
     for (let i = allNums.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [allNums[i], allNums[j]] = [allNums[j], allNums[i]];
