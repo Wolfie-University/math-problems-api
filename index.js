@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const QuadraticGenerator = require("./src/engine/generators/functions/QuadraticGenerator");
 
 const problems = require("./problems.json");
 
@@ -50,13 +51,13 @@ app.get("/problems", (req, res) => {
 
     if (maturaParam === true || maturaParam === "true") {
       let easyProblems = problems.filter(
-        (problem) => problem.difficulty === "easy"
+        (problem) => problem.difficulty === "easy",
       );
       let mediumProblems = problems.filter(
-        (problem) => problem.difficulty === "medium"
+        (problem) => problem.difficulty === "medium",
       );
       let hardProblems = problems.filter(
-        (problem) => problem.difficulty === "hard"
+        (problem) => problem.difficulty === "hard",
       );
 
       const easyCount = 15;
@@ -79,24 +80,24 @@ app.get("/problems", (req, res) => {
 
       if (typesParam && typesParam.toLowerCase() === "otwarte") {
         filteredProblems = filteredProblems.filter(
-          (problem) => problem.type === "otwarte"
+          (problem) => problem.type === "otwarte",
         );
       } else if (typesParam && typesParam.toLowerCase() === "zamkniete") {
         filteredProblems = filteredProblems.filter(
-          (problem) => problem.type === "zamkniete"
+          (problem) => problem.type === "zamkniete",
         );
       }
 
       if (difficultyParam) {
         filteredProblems = filteredProblems.filter(
-          (problem) => problem.difficulty === difficultyParam
+          (problem) => problem.difficulty === difficultyParam,
         );
       }
 
       if (tagsParam) {
         const tags = Array.isArray(tagsParam) ? tagsParam : [tagsParam];
         filteredProblems = filteredProblems.filter((problem) =>
-          tags.some((tag) => problem.tags && problem.tags.includes(tag))
+          tags.some((tag) => problem.tags && problem.tags.includes(tag)),
         );
       }
 
@@ -139,4 +140,17 @@ app.get("/", (req, res) => {
 const port = 3333;
 app.listen(port, () => {
   console.log(`Serwer działa na http://localhost:${port}`);
+});
+
+app.get("/api/v2/generator/quadratic", (req, res) => {
+  try {
+    const difficulty = req.query.difficulty || "medium";
+    const generator = new QuadraticGenerator(difficulty);
+    const problem = generator.generate();
+
+    res.json(problem);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Błąd generatora" });
+  }
 });
