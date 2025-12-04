@@ -3,29 +3,46 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class TrigIdentitiesGenerator extends BaseGenerator {
   generateIdentityReduction() {
-    const angle = MathUtils.randomInt(10, 40);
+    let angle;
+    if (this.difficulty === "easy") angle = MathUtils.randomInt(2, 4) * 10;
+    else if (this.difficulty === "hard")
+      angle = MathUtils.randomInt(21, 89) / 2;
+    else angle = MathUtils.randomInt(10, 40);
+
     const compl = 90 - angle;
     const type = MathUtils.randomElement(["sin", "cos"]);
 
+    const aStr = Number.isInteger(angle) ? `${angle}` : angle.toFixed(1);
+    const cStr = Number.isInteger(compl) ? `${compl}` : compl.toFixed(1);
+
     return this.createResponse({
-      question: `Wartość wyrażenia $$${type}^2 ${angle}^\\circ + ${type}^2 ${compl}^\\circ$$ jest równa:`,
+      question: `Wartość wyrażenia $$${type}^2 ${aStr}^\\circ + ${type}^2 ${cStr}^\\circ$$ jest równa:`,
       latex: ``,
       image: null,
       variables: { angle, compl, type },
       correctAnswer: `1`,
       distractors: [`0`, `2`, `\\frac{1}{2}`],
       steps: [
-        `Wzór redukcyjny: $$${type}(${compl}^\\circ) = ${type === "sin" ? "\\cos" : "\\sin"}(${angle}^\\circ)$$`,
-        `$$${type}^2 ${angle}^\\circ + ${type === "sin" ? "\\cos" : "\\sin"}^2 ${angle}^\\circ = 1$$`,
+        `Wzór redukcyjny: $$${type}(${cStr}^\\circ) = ${type === "sin" ? "\\cos" : "\\sin"}(90^\\circ - ${cStr}^\\circ) = ${type === "sin" ? "\\cos" : "\\sin"}(${aStr}^\\circ)$$`,
+        `$$${type}^2 ${aStr}^\\circ + ${type === "sin" ? "\\cos" : "\\sin"}^2 ${aStr}^\\circ = 1$$`,
       ],
     });
   }
 
   generateCalcExprFromTrig() {
-    const triples = [
-      [3, 4, 5],
-      [5, 12, 13],
-    ];
+    let triples;
+    if (this.difficulty === "easy") triples = [[3, 4, 5]];
+    else if (this.difficulty === "hard")
+      triples = [
+        [5, 12, 13],
+        [8, 15, 17],
+      ];
+    else
+      triples = [
+        [3, 4, 5],
+        [5, 12, 13],
+      ];
+
     const [leg1, leg2, hyp] = MathUtils.randomElement(triples);
     const qType = MathUtils.randomElement(["cos_sq", "val_expr"]);
     const sinVal = `\\frac{${leg1}}{${hyp}}`;
@@ -43,7 +60,7 @@ class TrigIdentitiesGenerator extends BaseGenerator {
           `1`,
         ],
         steps: [
-          `$$1 - (\\frac{${leg1}}{${hyp}})^2 = \\frac{${leg2 * leg2}}{${hyp * hyp}}$$`,
+          `$$1 - (\\frac{${leg1}}{${hyp}})^2 = \\frac{${hyp * hyp} - ${leg1 * leg1}}{${hyp * hyp}} = \\frac{${leg2 * leg2}}{${hyp * hyp}}$$`,
         ],
       });
     } else {
@@ -56,14 +73,18 @@ class TrigIdentitiesGenerator extends BaseGenerator {
         distractors: [`1`, `\\frac{${hyp}}{${leg2}}`, `0`],
         steps: [
           `$$\\sin^2\\alpha = \\frac{${leg1 * leg1}}{${hyp * hyp}}$$`,
-          `$$3 - 2(\\frac{${leg1 * leg1}}{${hyp * hyp}}) = \\dots$$`,
+          `$$3 - \\frac{${2 * leg1 * leg1}}{${hyp * hyp}} = \\dots$$`,
         ],
       });
     }
   }
 
   generateLinearRelation() {
-    const k = MathUtils.randomInt(2, 5);
+    let k;
+    if (this.difficulty === "easy") k = 2;
+    else if (this.difficulty === "hard") k = 5;
+    else k = MathUtils.randomInt(2, 4);
+
     return this.createResponse({
       question: `Kąt $$\\alpha$$ jest ostry i $$\\sin\\alpha = ${k}\\cos\\alpha$$. Wartość $$\\tg\\alpha$$ jest równa:`,
       latex: ``,
@@ -95,7 +116,6 @@ class TrigIdentitiesGenerator extends BaseGenerator {
     const [a, b, c] = MathUtils.randomElement([
       [3, 4, 5],
       [5, 12, 13],
-      [8, 15, 17],
     ]);
     const givenFunc = MathUtils.randomElement(["sin", "cos"]);
     const targetFunc = givenFunc === "sin" ? "cos" : "sin";
@@ -108,12 +128,14 @@ class TrigIdentitiesGenerator extends BaseGenerator {
       variables: { a, b, c },
       correctAnswer: targetVal,
       distractors: [`\\frac{${c - a}}{${c}}`, `\\frac{${a}}{${b}}`, `1`],
-      steps: [`$$1 - (\\frac{${givenFunc === "sin" ? a : b}}{${c}})^2 = ...$$`],
+      steps: [`$$1 - (\\frac{${givenFunc === "sin" ? a : b}}{${c}})^2$$`],
     });
   }
 
   generateAngleRelation() {
-    const alpha = MathUtils.randomInt(10, 80);
+    let alpha;
+    if (this.difficulty === "easy") alpha = 30;
+    else alpha = MathUtils.randomInt(10, 80);
     const beta = 90 - alpha;
     return this.createResponse({
       question: `Wartość wyrażenia $$\\sin ${alpha}^\\circ - \\cos ${beta}^\\circ$$ jest równa:`,
@@ -122,9 +144,7 @@ class TrigIdentitiesGenerator extends BaseGenerator {
       variables: { alpha, beta },
       correctAnswer: `0`,
       distractors: [`1`, `-1`, `2\\sin ${alpha}^\\circ`],
-      steps: [
-        `$$\\cos ${beta}^\\circ = \\sin (90^\\circ - ${beta}^\\circ) = \\sin ${alpha}^\\circ$$`,
-      ],
+      steps: [`$$\\cos ${beta}^\\circ = \\sin ${alpha}^\\circ$$`],
     });
   }
 
@@ -140,12 +160,15 @@ class TrigIdentitiesGenerator extends BaseGenerator {
       variables: { a, b, c },
       correctAnswer: `\\frac{${a}}{${b}}`,
       distractors: [`\\frac{${b}}{${a}}`, `\\frac{${a}}{${c}}`, `1`],
-      steps: [`$$\\tg\\alpha = \\frac{${a}}{${b}}$$`],
+      steps: [`$$\\tg\\alpha = \\sin\\alpha / \\cos\\alpha$$`],
     });
   }
 
   generateTanProductReduction() {
-    const angle = MathUtils.randomInt(10, 40);
+    let angle;
+    if (this.difficulty === "easy")
+      angle = 30;
+    else angle = MathUtils.randomInt(10, 40);
     const compl = 90 - angle;
     return this.createResponse({
       question: `Wartość wyrażenia $$\\tg ${angle}^\\circ \\cdot \\tg ${compl}^\\circ$$ jest równa:`,
