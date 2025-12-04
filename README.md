@@ -1,4 +1,4 @@
-# Math Problems API 🧮
+# Matura Engine API 🧮
 
 A powerful, modular Node.js REST API engine designed to generate an infinite number of unique mathematical problems. Tailored for the Polish Matura Exam (Basic Level 2025), but applicable to general high school mathematics.
 
