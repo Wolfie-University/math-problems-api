@@ -3,27 +3,73 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class GeometricSequencesGenerator extends BaseGenerator {
   generateGeometricX() {
-    const r = MathUtils.randomElement([-3, -2, 2, 3]);
-    const f = MathUtils.randomInt(1, 5);
-    const m = f * r,
-      l = m * r;
+    // (f, x, l) -> x = sqrt(f*l)
+    let qList, fRange;
+
+    if (this.difficulty === "easy") {
+      qList = [2, 3];
+      fRange = [1, 5];
+    } else if (this.difficulty === "hard") {
+      qList = [4, 5, -4, -5];
+      fRange = [5, 15];
+    } else {
+      qList = [-2, -3, 2, 3];
+      fRange = [2, 10];
+    }
+
+    let r = MathUtils.randomElement(qList);
+    const f = MathUtils.randomInt(fRange[0], fRange[1]);
+
+    if (this.difficulty === "hard" && r > 1 && Math.random() > 0.5) {
+      r = 1 / r;
+    }
+
+    const m = f * r;
+    const l = m * r;
+
+    const isFractional =
+      this.difficulty === "hard" && Math.random() > 0.5 && r > 0;
+    const t1 = isFractional ? l : f;
+    const t3 = isFractional ? f : l;
+    const t2 = isFractional ? l / r : f * r;
+
     return this.createResponse({
-      question: `Liczby $$(${f}, x, ${l})$$ to ciąg geometryczny o wyrazach dodatnich.`,
-      latex: `(${f}, x, ${l})`,
+      question: `Liczby $$(${t1}, x, ${t3})$$ tworzą ciąg geometryczny o wyrazach dodatnich. Oblicz $$x$$.`,
+      latex: `(${t1}, x, ${t3})`,
       image: null,
-      variables: { f, m, l },
-      correctAnswer: `${Math.abs(m)}`,
-      distractors: [`${m * 2}`, `${l - f}`, `${f * l}`],
+      variables: { f: t1, m: t2, l: t3 },
+      correctAnswer: `${Math.abs(t2)}`,
+      distractors: [
+        `${t2 * 2}`,
+        `${Math.abs(t3 - t1)}`,
+        `${t1 * t3}`,
+      ],
       steps: [
-        `$$x^2 = ${f}\\cdot${l} = ${f * l} \\implies x=\\sqrt{${f * l}}=${Math.abs(m)}$$`,
+        `Własność ciągu geometrycznego: $$x^2 = a_1 \\cdot a_3$$`,
+        `$$x^2 = ${t1} \\cdot ${t3} = ${t1 * t3}$$`,
+        `$$x = \\sqrt{${t1 * t3}} = ${Math.abs(t2)}$$`,
       ],
     });
   }
 
   generateGeometricSum() {
-    const n = MathUtils.randomInt(3, 6);
-    const q = MathUtils.randomElement([-3, -2, 2, 3]);
+    let nRange, qList;
+
+    if (this.difficulty === "easy") {
+      nRange = [3, 4];
+      qList = [2];
+    } else if (this.difficulty === "hard") {
+      nRange = [5, 6];
+      qList = [-2, -3, 3];
+    } else {
+      nRange = [4, 5];
+      qList = [2, -2, 3];
+    }
+
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
+    const q = MathUtils.randomElement(qList);
     const a1 = MathUtils.randomInt(1, 4);
+
     const sum = (a1 * (1 - Math.pow(q, n))) / (1 - q);
 
     return this.createResponse({
@@ -38,17 +84,34 @@ class GeometricSequencesGenerator extends BaseGenerator {
         `${a1 * Math.pow(q, n - 1)}`,
       ],
       steps: [
-        `$$S_{${n}} = ${a1} \\cdot \\frac{1-(${q})^{${n}}}{1-(${q})} = ${sum}$$`,
+        `Wzór na sumę: $$S_n = a_1 \\frac{1-q^n}{1-q}$$`,
+        `$$S_{${n}} = ${a1} \\cdot \\frac{1-(${q})^{${n}}}{1-(${q})}$$`,
+        `Obliczamy potęgę: $$(${q})^{${n}} = ${Math.pow(q, n)}$$`,
+        `$$S_{${n}} = ${a1} \\cdot \\frac{1 - ${Math.pow(q, n)}}{${1 - q}} = ${sum}$$`,
       ],
     });
   }
 
   generateGeometricRatioDist() {
-    const q = MathUtils.randomElement([-3, -2, 2, 3, 4]);
+    let diffRange, qList;
+
+    if (this.difficulty === "easy") {
+      diffRange = [2, 2];
+      qList = [2, 3, 4, 5];
+    } else if (this.difficulty === "hard") {
+      diffRange = [3, 4];
+      qList = [-2, -3, 2, 3];
+    } else {
+      diffRange = [2, 3];
+      qList = [2, 3, 4];
+    }
+
+    const q = MathUtils.randomElement(qList);
     const k = MathUtils.randomInt(1, 2);
-    const diff = MathUtils.randomElement([2, 3]);
+    const diff = MathUtils.randomInt(diffRange[0], diffRange[1]);
     const m = k + diff;
-    const a1 = MathUtils.randomInt(1, 5);
+
+    const a1 = MathUtils.randomInt(1, 3);
     const valK = a1 * Math.pow(q, k - 1);
     const valM = valK * Math.pow(q, diff);
 
@@ -64,13 +127,26 @@ class GeometricSequencesGenerator extends BaseGenerator {
         `${q > 0 ? -q : Math.abs(q)}`,
       ],
       steps: [
-        `$$q^{${diff}} = \\frac{${valM}}{${valK}} = ${Math.pow(q, diff)} \\implies q = ${q}$$`,
+        `$$a_m = a_k \\cdot q^{m-k}$$`,
+        `$$${valM} = ${valK} \\cdot q^{${diff}}$$`,
+        `$$q^{${diff}} = \\frac{${valM}}{${valK}} = ${Math.pow(q, diff)}$$`,
+        `$$q = \\sqrt[${diff}]{${Math.pow(q, diff)}} = ${q}$$`,
       ],
     });
   }
 
   generateGeometricAlgebraic() {
-    const a = MathUtils.randomElement([2, 3, 4, 5]);
+    let aList;
+
+    if (this.difficulty === "easy") {
+      aList = [2, 3];
+    } else if (this.difficulty === "hard") {
+      aList = [6, 8, 9, 12];
+    } else {
+      aList = [3, 4, 5];
+    }
+
+    const a = MathUtils.randomElement(aList);
     const div = MathUtils.randomElement([1, a]);
     const b_minus_2a = div;
     const b = b_minus_2a + 2 * a;
@@ -87,7 +163,13 @@ class GeometricSequencesGenerator extends BaseGenerator {
       variables: { x, a, b },
       correctAnswer: `${x}`,
       distractors: [`${x + a}`, `${x - 1}`, `${a}`],
-      steps: [`$$(${t2})^2 = x \\cdot (${t3}) \\implies x = ${x}$$`],
+      steps: [
+        `Środkowy do kwadratu = iloczyn skrajnych.`,
+        `$$(${t2})^2 = x \\cdot (${t3})$$`,
+        `$$x^2 + ${2 * a}x + ${a * a} = x^2 + ${b}x$$`,
+        `$$${a * a} = ${b}x - ${2 * a}x = ${b - 2 * a}x$$`,
+        `$$x = ${x}$$`,
+      ],
     });
   }
 }

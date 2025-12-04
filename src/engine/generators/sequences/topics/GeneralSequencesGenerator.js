@@ -3,26 +3,54 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class GeneralSequencesGenerator extends BaseGenerator {
   generateNthTerm() {
-    const a = MathUtils.randomInt(-2, 2) || 1;
-    const b = MathUtils.randomInt(-5, 5);
-    const c = MathUtils.randomInt(-10, 10);
-    const n = MathUtils.randomInt(2, 10);
+    let aRange, bRange, cRange, nRange;
+    if (this.difficulty === "easy") {
+      aRange = [0, 0];
+      bRange = [2, 5];
+      cRange = [-5, 5];
+      nRange = [2, 5];
+    } else if (this.difficulty === "hard") {
+      aRange = [1, 3];
+      bRange = [-5, 5];
+      cRange = [-10, 10];
+      nRange = [5, 12];
+    } else {
+      aRange = [1, 1];
+      bRange = [0, 0];
+      cRange = [-5, 5];
+      nRange = [3, 8];
+    }
+
+    const a = MathUtils.randomInt(aRange[0], aRange[1]);
+    const b = MathUtils.randomInt(bRange[0], bRange[1]) || 1;
+    const c = MathUtils.randomInt(cRange[0], cRange[1]);
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
+
     const formula = `a_n = ${MathUtils.formatPolynomial(a, b, c).replace(/x/g, "n")}`;
     const val = a * n * n + b * n + c;
+
     return this.createResponse({
-      question: `Oblicz $$a_{${n}}$$ dla ciągu $$${formula}$$.`,
+      question: `Oblicz $$a_{${n}}$$ dla ciągu $$${formula}$$ (dla $$n \\ge 1$$).`,
       latex: formula,
       image: null,
       variables: { a, b, c, n },
       correctAnswer: `${val}`,
-      distractors: [`${val + a}`, `${val - b}`, `${-val}`],
+      distractors: [`${val + b}`, `${val - b}`, `${-val}`],
       steps: [`$$a_{${n}} = ${a}(${n})^2 + (${b})(${n}) + (${c}) = ${val}$$`],
     });
   }
 
   generateWhichTerm() {
+    let type;
+    if (this.difficulty === "easy") {
+      type = "linear";
+    } else if (this.difficulty === "hard") {
+      type = "quadratic";
+    } else {
+      type = MathUtils.randomElement(["linear", "quadratic"]);
+    }
+
     const n = MathUtils.randomInt(2, 12);
-    const type = MathUtils.randomElement(["quadratic", "linear"]);
     let a, b, c, X, formula;
 
     if (type === "linear") {
@@ -32,7 +60,7 @@ class GeneralSequencesGenerator extends BaseGenerator {
       formula = `a_n = ${a}n ${b >= 0 ? "+" : ""}${b}`;
     } else {
       a = 1;
-      b = -MathUtils.randomInt(1, 10);
+      b = -MathUtils.randomInt(3, 12);
       c = MathUtils.randomInt(-10, 10);
       X = n * n + b * n + c;
       formula = `a_n = n^2 ${b >= 0 ? "+" : ""}${b}n ${c >= 0 ? "+" : ""}${c}`;
@@ -54,23 +82,31 @@ class GeneralSequencesGenerator extends BaseGenerator {
   }
 
   generateCountTerms() {
-    const a = -MathUtils.randomInt(2, 5);
-    const b = MathUtils.randomInt(20, 50);
-    const limit = -b / a;
-    const count = Math.ceil(limit) - 1;
-    const formula = `a_n = ${a}n + ${b}`;
+    let type;
+    if (this.difficulty === "easy") type = "linear";
+    else type = "quadratic";
 
-    return this.createResponse({
-      question: `Ile wyrazów ciągu określonego wzorem $$${formula}$$ jest dodatnich?`,
-      latex: formula,
-      image: null,
-      variables: { a, b, count },
-      correctAnswer: `${count}`,
-      distractors: [`${count + 1}`, `${count - 1}`, `${Math.floor(limit)}`],
-      steps: [
-        `$$${a}n + ${b} > 0 \\implies n < ${parseFloat(limit.toFixed(2))} \\implies n \\in \\{1, ..., ${count}\\}$$`,
-      ],
-    });
+    if (type === "linear") {
+      const a = -MathUtils.randomInt(2, 5);
+      const b = MathUtils.randomInt(20, 50);
+      const limit = -b / a;
+      const count = Math.ceil(limit) - 1;
+      const formula = `a_n = ${a}n + ${b}`;
+
+      return this.createResponse({
+        question: `Ile wyrazów ciągu określonego wzorem $$${formula}$$ jest dodatnich?`,
+        latex: formula,
+        image: null,
+        variables: { a, b, count },
+        correctAnswer: `${count}`,
+        distractors: [`${count + 1}`, `${count - 1}`, `${Math.floor(limit)}`],
+        steps: [
+          `$$${a}n + ${b} > 0 \\implies n < ${parseFloat(limit.toFixed(2))} \\implies n \\in \\{1, ..., ${count}\\}$$`,
+        ],
+      });
+    } else {
+      return this.generateQuadraticSequencePos();
+    }
   }
 
   generateSequenceMonotonicity() {
@@ -91,13 +127,22 @@ class GeneralSequencesGenerator extends BaseGenerator {
   }
 
   generateQuadraticSequencePos() {
-    const x1 = MathUtils.randomInt(1, 3);
-    const diff = MathUtils.randomInt(3, 7);
+    let x1Range, diffRange;
+    if (this.difficulty === "easy") {
+      x1Range = [1, 2];
+      diffRange = [2, 4];
+    } else {
+      x1Range = [1, 3];
+      diffRange = [5, 10];
+    }
+
+    const x1 = MathUtils.randomInt(x1Range[0], x1Range[1]);
+    const diff = MathUtils.randomInt(diffRange[0], diffRange[1]);
     const x2 = x1 + diff;
     const b = x1 + x2;
     const c = -(x1 * x2);
     const count = x2 - x1 - 1;
-    const formula = `-n^2 + ${b}n ${c}`;
+    const formula = `-n^2 + ${b}n ${c >= 0 ? "+" : ""}${c}`;
 
     return this.createResponse({
       question: `Ile wyrazów ciągu $$a_n = ${formula}$$ jest dodatnich?`,
@@ -107,7 +152,7 @@ class GeneralSequencesGenerator extends BaseGenerator {
       correctAnswer: `${count}`,
       distractors: [`${count + 1}`, `${count + 2}`, `${x2}`],
       steps: [
-        `Parabola w dół, dodatnia między $$${x1}$$ a $$${x2}$$. Ilość: $$${count}$$.`,
+        `Parabola w dół, dodatnia między $$${x1}$$ a $$${x2}$$. Ilość liczb całkowitych: $$${count}$$.`,
       ],
     });
   }
@@ -131,8 +176,17 @@ class GeneralSequencesGenerator extends BaseGenerator {
   }
 
   generateSumFormulaAnalysis() {
-    const a = MathUtils.randomInt(1, 3);
-    const b = MathUtils.randomInt(1, 5);
+    let aRange, bRange;
+    if (this.difficulty === "easy") {
+      aRange = [1, 1];
+      bRange = [0, 2];
+    } else {
+      aRange = [2, 4];
+      bRange = [3, 8];
+    }
+
+    const a = MathUtils.randomInt(aRange[0], aRange[1]);
+    const b = MathUtils.randomInt(bRange[0], bRange[1]);
     const S3 = a * 3 * 3 - b * 3;
     const S2 = a * 2 * 2 - b * 2;
     const a3 = S3 - S2;
