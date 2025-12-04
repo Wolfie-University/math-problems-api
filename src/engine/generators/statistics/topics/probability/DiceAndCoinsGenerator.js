@@ -3,9 +3,20 @@ const MathUtils = require("../../../../utils/MathUtils");
 
 class DiceAndCoinsGenerator extends BaseGenerator {
   generateDiceSum() {
-    const limit = MathUtils.randomInt(4, 10);
+    let limitRange;
+    if (this.difficulty === "easy") {
+      limitRange = [2, 5];
+      limitRange = [9, 10];
+    } else if (this.difficulty === "hard") {
+      limitRange = [5, 7];
+    } else {
+      limitRange = [7, 9];
+    }
+
+    const limit = MathUtils.randomInt(limitRange[0], limitRange[1]);
     const omega = 36;
     let favored = 0;
+
     for (let i = 1; i <= 6; i++) {
       for (let j = 1; j <= 6; j++) {
         if (i + j > limit) favored++;
@@ -35,7 +46,16 @@ class DiceAndCoinsGenerator extends BaseGenerator {
 
   generateDiceComparison() {
     const omega = 36;
-    const type = MathUtils.randomElement(["greater", "equal", "less"]);
+    let type;
+
+    if (this.difficulty === "easy") {
+      type = "equal";
+    } else if (this.difficulty === "hard") {
+      type = MathUtils.randomElement(["greater", "less"]);
+    } else {
+      type = MathUtils.randomElement(["greater", "equal"]);
+    }
+
     let favored = 0;
     let desc = "";
 
@@ -67,7 +87,16 @@ class DiceAndCoinsGenerator extends BaseGenerator {
 
   generateDiceProduct() {
     const omega = 36;
-    const type = MathUtils.randomElement(["odd", "even", "div4"]);
+    let type;
+
+    if (this.difficulty === "easy") {
+      type = "odd";
+    } else if (this.difficulty === "hard") {
+      type = "div4";
+    } else {
+      type = "even";
+    }
+
     let favored = 0;
     let desc = "";
 
@@ -100,9 +129,12 @@ class DiceAndCoinsGenerator extends BaseGenerator {
   }
 
   generateCoinsDynamic() {
-    const n = MathUtils.randomInt(2, 4);
+    let n;
+    if (this.difficulty === "easy") n = 2;
+    else if (this.difficulty === "hard") n = 4;
+    else n = 3;
+
     const omega = Math.pow(2, n);
-    // Co najmniej 1 orzeł
     const favored = omega - 1;
     const gcd = this.getGCD(favored, omega);
 
