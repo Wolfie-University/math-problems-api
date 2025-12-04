@@ -3,13 +3,21 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class SimpleRulesGenerator extends BaseGenerator {
   generateNumbersRule() {
-    const digits = MathUtils.randomElement([3, 4]);
-    const type = MathUtils.randomElement([
-      "even",
-      "div5",
-      "div10",
-      "no_zero_digit",
-    ]);
+    let digitsRange, types;
+
+    if (this.difficulty === "easy") {
+      digitsRange = [3, 3];
+      types = ["even", "div10"];
+    } else if (this.difficulty === "hard") {
+      digitsRange = [4, 5];
+      types = ["div5", "no_zero_digit"];
+    } else {
+      digitsRange = [3, 4];
+      types = ["even", "div5", "div10", "no_zero_digit"];
+    }
+
+    const digits = MathUtils.randomInt(digitsRange[0], digitsRange[1]);
+    const type = MathUtils.randomElement(types);
 
     let count, desc;
     if (type === "even") {
@@ -38,27 +46,66 @@ class SimpleRulesGenerator extends BaseGenerator {
   }
 
   generateDistinctDigits() {
-    const digits = 3;
-    const res = 9 * 9 * 8;
+    let digits;
+    if (this.difficulty === "easy") {
+      digits = 3;
+    } else if (this.difficulty === "hard") {
+      digits = 5;
+    } else {
+      digits = 4;
+    }
+
+    // 9 * 9 * 8 * 7 * ...
+    let res = 9;
+    let current = 9;
+    for (let i = 1; i < digits; i++) {
+      res *= current;
+      current--;
+    }
+
+    const digitName =
+      digits === 3
+        ? "trzycyfrowych"
+        : digits === 4
+          ? "czterocyfrowych"
+          : "pięciocyfrowych";
+
     return this.createResponse({
-      question:
-        "Ile jest wszystkich liczb naturalnych trzycyfrowych o cyfrach niepowtarzających się?",
+      question: `Ile jest wszystkich liczb naturalnych ${digitName} o cyfrach niepowtarzających się?`,
       latex: ``,
       image: null,
-      variables: {},
+      variables: { digits },
       correctAnswer: `${res}`,
-      distractors: [`${9 * 10 * 10}`, `${9 * 8 * 7}`, `${10 * 9 * 8}`],
+      distractors: [
+        `${9 * Math.pow(10, digits - 1)}`,
+        `${Math.pow(9, digits)}`,
+        `${res * 2}`,
+      ],
       steps: [
         `Pierwsza cyfra: 9 opcji (bez 0).`,
         `Druga: 9 opcji (bo dochodzi 0, odpada użyta).`,
         `Trzecia: 8 opcji.`,
-        `$$9 \\cdot 9 \\cdot 8 = ${res}$$`,
+        digits > 3 ? `Kolejne: coraz mniej o 1.` : ``,
+        `Wynik: $$${res}$$`,
       ],
     });
   }
 
   generateNumbersFromSet() {
-    const setType = MathUtils.randomElement(["odd", "small", "prime"]);
+    let nRange, setTypes;
+
+    if (this.difficulty === "easy") {
+      nRange = [2, 3];
+      setTypes = ["small"];
+    } else if (this.difficulty === "hard") {
+      nRange = [4, 6];
+      setTypes = ["prime", "odd"];
+    } else {
+      nRange = [3, 4];
+      setTypes = ["odd", "small", "prime"];
+    }
+
+    const setType = MathUtils.randomElement(setTypes);
     let setDigits, setName;
 
     if (setType === "odd") {
@@ -72,7 +119,7 @@ class SimpleRulesGenerator extends BaseGenerator {
       setName = "będących cyframi pierwszymi";
     }
 
-    const n = MathUtils.randomInt(3, 5);
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
     const k = setDigits.length;
     const res = Math.pow(k, n);
 
@@ -91,7 +138,16 @@ class SimpleRulesGenerator extends BaseGenerator {
   }
 
   generateSumOfDigits() {
-    const sumTarget = MathUtils.randomElement([3, 4, 5]);
+    let sumRange;
+    if (this.difficulty === "easy") {
+      sumRange = [2, 3];
+    } else if (this.difficulty === "hard") {
+      sumRange = [6, 7];
+    } else {
+      sumRange = [4, 5];
+    }
+
+    const sumTarget = MathUtils.randomInt(sumRange[0], sumRange[1]);
     let count = 0;
     let examples = [];
 
@@ -121,8 +177,20 @@ class SimpleRulesGenerator extends BaseGenerator {
   }
 
   generateMixedCodes() {
-    const lettersCount = MathUtils.randomElement([2, 3]);
-    const digitsCount = MathUtils.randomElement([2, 3, 4]);
+    let lRange, dRange;
+    if (this.difficulty === "easy") {
+      lRange = [1, 2];
+      dRange = [1, 2];
+    } else if (this.difficulty === "hard") {
+      lRange = [3, 4];
+      dRange = [3, 5];
+    } else {
+      lRange = [2, 3];
+      dRange = [2, 4];
+    }
+
+    const lettersCount = MathUtils.randomInt(lRange[0], lRange[1]);
+    const digitsCount = MathUtils.randomInt(dRange[0], dRange[1]);
     const latexRes = `26^{${lettersCount}} \\cdot 10^{${digitsCount}}`;
 
     return this.createResponse({

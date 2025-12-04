@@ -3,8 +3,19 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class PermutationsGenerator extends BaseGenerator {
   generateQueueProblem() {
-    const n = MathUtils.randomInt(4, 6);
+    let nRange;
+
+    if (this.difficulty === "easy") {
+      nRange = [3, 4];
+    } else if (this.difficulty === "hard") {
+      nRange = [7, 8]; // 7! = 5040, 8! = 40320
+    } else {
+      nRange = [5, 6];
+    }
+
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
     let res = this.factorial(n);
+
     return this.createResponse({
       question: `Na ile sposobów $$${n}$$ osób może ustawić się w kolejce do kasy?`,
       latex: `n=${n}`,
@@ -20,7 +31,17 @@ class PermutationsGenerator extends BaseGenerator {
   }
 
   generateFlagProblem() {
-    const k = MathUtils.randomInt(4, 6);
+    let kRange;
+
+    if (this.difficulty === "easy") {
+      kRange = [3, 4];
+    } else if (this.difficulty === "hard") {
+      kRange = [6, 9];
+    } else {
+      kRange = [4, 6];
+    }
+
+    const k = MathUtils.randomInt(kRange[0], kRange[1]);
     const distinct = MathUtils.randomElement([true, false]);
     const res = distinct ? k * (k - 1) * (k - 2) : k * k * k;
 
@@ -47,7 +68,17 @@ class PermutationsGenerator extends BaseGenerator {
   }
 
   generateSeatingConstraint() {
-    const n = MathUtils.randomInt(5, 7);
+    let nRange;
+
+    if (this.difficulty === "easy") {
+      nRange = [3, 4];
+    } else if (this.difficulty === "hard") {
+      nRange = [7, 8];
+    } else {
+      nRange = [5, 6];
+    }
+
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
     const type = MathUtils.randomElement(["together", "fixed_first"]);
     let res, desc;
 
