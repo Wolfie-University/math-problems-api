@@ -3,26 +3,51 @@ const MathUtils = require("../../../../utils/MathUtils");
 
 class FunctionPropertiesGenerator extends BaseGenerator {
   generatePointBelongsParam() {
-    const type = MathUtils.randomElement(["rational", "quadratic"]);
+    let type, coeffRange, pointRange;
+
+    if (this.difficulty === "easy") {
+      type = "quadratic";
+      coeffRange = [-2, 2];
+      pointRange = [-3, 3];
+    } else if (this.difficulty === "hard") {
+      type = MathUtils.randomElement(["rational", "quadratic"]);
+      coeffRange = [-8, 8];
+      pointRange = [-8, 8];
+    } else {
+      type = "rational";
+      coeffRange = [-5, 5];
+      pointRange = [-5, 5];
+    }
+
     let formula, x0, m, stepsCalc;
 
     if (type === "rational") {
-      const a = MathUtils.randomElement([-4, -2, 2, 3, 4, 6, 8]);
-      const b = MathUtils.randomInt(-5, 5);
-      const divisors = [1, -1];
-      if (a % 2 === 0) divisors.push(2, -2);
-      if (a % 3 === 0) divisors.push(3, -3);
+      let a = MathUtils.randomInt(coeffRange[0], coeffRange[1]);
+      if (a === 0) a = 2;
+
+      const b = MathUtils.randomInt(coeffRange[0], coeffRange[1]);
+
+      const divisors = [];
+      for (let i = 1; i <= Math.abs(a); i++) {
+        if (a % i === 0) {
+          divisors.push(i);
+          divisors.push(-i);
+        }
+      }
       x0 = MathUtils.randomElement(divisors);
       m = a / x0 + b;
+
       formula = `f(x) = \\frac{${a}}{x} ${b >= 0 ? "+" : ""}${b === 0 ? "" : b}`;
-      stepsCalc = `$$f(${x0}) = ${m}$$`;
+      stepsCalc = `$$f(${x0}) = \\frac{${a}}{${x0}} ${b >= 0 ? "+" : ""}${b === 0 ? "" : b} = ${a / x0} ${b >= 0 ? "+" : ""}${b === 0 ? "" : b} = ${m}$$`;
     } else {
-      const p = MathUtils.randomInt(-3, 3);
-      const q = MathUtils.randomInt(-3, 3);
-      x0 = MathUtils.randomInt(-5, 5);
+      // f(x) = (x-p)^2 + q
+      const p = MathUtils.randomInt(coeffRange[0], coeffRange[1]);
+      const q = MathUtils.randomInt(coeffRange[0], coeffRange[1]);
+      x0 = MathUtils.randomInt(pointRange[0], pointRange[1]);
       m = Math.pow(x0 - p, 2) + q;
+
       formula = `f(x) = (x ${p > 0 ? "-" : "+"} ${Math.abs(p)})^2 ${q >= 0 ? "+" : ""}${q}`;
-      stepsCalc = `$$f(${x0}) = ${m}$$`;
+      stepsCalc = `$$f(${x0}) = (${x0} ${p > 0 ? "-" : "+"} ${Math.abs(p)})^2 ${q >= 0 ? "+" : ""}${q} = (${x0 - p})^2 ${q >= 0 ? "+" : ""}${q} = ${Math.pow(x0 - p, 2)} ${q >= 0 ? "+" : ""}${q} = ${m}$$`;
     }
 
     return this.createResponse({
@@ -33,6 +58,7 @@ class FunctionPropertiesGenerator extends BaseGenerator {
       correctAnswer: `m = ${m}`,
       distractors: [`m = ${m + 1}`, `m = ${-m}`, `m = 0`],
       steps: [
+        `Skoro punkt $$A$$ należy do wykresu, to jego współrzędne spełniają równanie funkcji.`,
         `Podstawiamy $$x = ${x0}$$ i $$y = m$$.`,
         stepsCalc,
         `$$m = ${m}$$`,
@@ -41,17 +67,32 @@ class FunctionPropertiesGenerator extends BaseGenerator {
   }
 
   generateReadGraphProperties() {
+    let segmentsCount, rangeXY;
+    if (this.difficulty === "easy") {
+      segmentsCount = 2;
+      rangeXY = [-4, 4];
+    } else if (this.difficulty === "hard") {
+      segmentsCount = 5;
+      rangeXY = [-8, 8];
+    } else {
+      segmentsCount = 3;
+      rangeXY = [-6, 6];
+    }
+
     const points = [];
-    let currX = -5;
-    let currY = MathUtils.randomInt(-3, 3);
+    let currX = rangeXY[0];
+    let currY = MathUtils.randomInt(rangeXY[0], rangeXY[1]);
     points.push({ x: currX, y: currY });
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < segmentsCount; i++) {
       currX += MathUtils.randomInt(2, 4);
-      if (currX > 6) currX = 6;
-      currY = MathUtils.randomInt(-4, 4);
+      if (currX > rangeXY[1]) {
+        currX = rangeXY[1];
+      }
+
+      currY = MathUtils.randomInt(rangeXY[0], rangeXY[1]);
       points.push({ x: currX, y: currY });
-      if (currX === 6) break;
+      if (currX >= rangeXY[1]) break;
     }
 
     const ys = points.map((p) => p.y);
@@ -72,18 +113,34 @@ class FunctionPropertiesGenerator extends BaseGenerator {
         `\\langle ${minY}, ${maxY})`,
       ],
       steps: [
+        `Odczytujemy z osi $$Oy$$ najniższy i najwyższy punkt wykresu.`,
         `Najmniejsza wartość: $$y_{min} = ${minY}$$`,
         `Największa wartość: $$y_{max} = ${maxY}$$`,
-        `Zbiór wartości: $$${range}$$`,
+        `Funkcja jest ciągła (połączone odcinki), więc zbiór wartości to $$${range}$$`,
       ],
     });
   }
 
   generateFunctionDomain() {
-    const x1 = MathUtils.randomInt(-5, 5);
-    let x2 = MathUtils.randomInt(-5, 5);
-    while (x1 === x2) x2 = MathUtils.randomInt(-5, 5);
-    const showPolynomial = MathUtils.randomElement([true, false]);
+    let range;
+    let polynomialProb;
+
+    if (this.difficulty === "easy") {
+      range = [-3, 3];
+      polynomialProb = 0.0;
+    } else if (this.difficulty === "hard") {
+      range = [-9, 9];
+      polynomialProb = 1.0;
+    } else {
+      range = [-5, 5];
+      polynomialProb = 0.5;
+    }
+
+    const x1 = MathUtils.randomInt(range[0], range[1]);
+    let x2 = MathUtils.randomInt(range[0], range[1]);
+    while (x1 === x2) x2 = MathUtils.randomInt(range[0], range[1]);
+
+    const showPolynomial = Math.random() < polynomialProb;
     let denominatorLatex;
 
     if (showPolynomial) {
@@ -111,15 +168,29 @@ class FunctionPropertiesGenerator extends BaseGenerator {
       steps: [
         `Mianownik musi być różny od zera.`,
         `Miejsca zerowe mianownika: $$${x1}, ${x2}$$`,
+        `Te liczby musimy wyrzucić ze zbioru liczb rzeczywistych.`,
       ],
     });
   }
 
   generateFunctionValue() {
-    const a = MathUtils.randomInt(-3, 3);
-    const c1 = MathUtils.randomInt(-3, 3) || 1;
-    const c2 = MathUtils.randomInt(-5, 5);
-    const c3 = MathUtils.randomInt(-5, 5);
+    let coeffRange, xRange;
+    if (this.difficulty === "easy") {
+      coeffRange = [-2, 2];
+      xRange = [0, 3];
+    } else if (this.difficulty === "hard") {
+      coeffRange = [-6, 6];
+      xRange = [-5, 5];
+    } else {
+      coeffRange = [-4, 4];
+      xRange = [-3, 3];
+    }
+
+    const a = MathUtils.randomInt(xRange[0], xRange[1]);
+    const c1 = MathUtils.randomInt(coeffRange[0], coeffRange[1]) || 1;
+    const c2 = MathUtils.randomInt(coeffRange[0], coeffRange[1]);
+    const c3 = MathUtils.randomInt(coeffRange[0], coeffRange[1]);
+
     const formula = MathUtils.formatPolynomial(c1, c2, c3);
     const result = c1 * a * a + c2 * a + c3;
 
@@ -130,7 +201,10 @@ class FunctionPropertiesGenerator extends BaseGenerator {
       variables: { a, c1, c2, c3 },
       correctAnswer: `${result}`,
       distractors: [`${result + c1}`, `${-result}`, `${result - 10}`],
-      steps: [`$$f(${a}) = ${result}$$`],
+      steps: [
+        `Podstawiamy $$x = ${a}$$ do wzoru funkcji.`,
+        `$$f(${a}) = ${result}$$`,
+      ],
     });
   }
 

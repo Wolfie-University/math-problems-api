@@ -3,10 +3,27 @@ const MathUtils = require("../../../../utils/MathUtils");
 
 class LinearFunctionGenerator extends BaseGenerator {
   generateLinearRoot() {
-    const root = MathUtils.randomInt(-6, 6);
-    let a_num = MathUtils.randomElement([1, 2, 3, 4, 5]);
-    let a_den = MathUtils.randomElement([1, 1, 2, 3]);
+    // f(x) = ax + b = 0 -> x = -b/a
+
+    let a_num, a_den, rootRange;
+
+    if (this.difficulty === "easy") {
+      a_num = MathUtils.randomElement([1, 2, 3, 4]);
+      a_den = 1;
+      rootRange = [-5, 5];
+    } else if (this.difficulty === "hard") {
+      a_num = MathUtils.randomElement([2, 3, 4, 5]);
+      a_den = MathUtils.randomElement([3, 5, 7]);
+      rootRange = [-8, 8];
+    } else {
+      a_num = MathUtils.randomElement([1, 2, 3]);
+      a_den = MathUtils.randomElement([1, 2]);
+      rootRange = [-6, 6];
+    }
+
+    const root = MathUtils.randomInt(rootRange[0], rootRange[1]);
     if (Math.random() > 0.5) a_num *= -1;
+
     const a = a_num / a_den;
     const b = -a * root;
     const formula = this.formatLinear(a, b);
@@ -19,6 +36,7 @@ class LinearFunctionGenerator extends BaseGenerator {
       correctAnswer: `${root}`,
       distractors: [`${-root}`, `${b}`, `${root + 1}`],
       steps: [
+        `Szukamy takiego $$x$$, dla którego $$f(x) = 0$$.`,
         `$$${formula} = 0$$`,
         `$$${this.fractionToLatex(a)}x = ${this.fractionToLatex(-b)}$$`,
         `$$x = ${this.fractionToLatex(-b)} : (${this.fractionToLatex(a)}) = ${root}$$`,
@@ -27,8 +45,20 @@ class LinearFunctionGenerator extends BaseGenerator {
   }
 
   generateLinearGraphAnalysis() {
-    const a = MathUtils.randomElement([-2, -1, 1, 2]);
+    let rangeA, rangeB;
+    if (this.difficulty === "easy") {
+      rangeA = [-2, 2];
+      rangeB = [-3, 3];
+    } else {
+      rangeA = [-0.5, 0.5];
+      rangeB = [-1, 1];
+    }
+
+    let a = MathUtils.randomElement([-2, -1, 1, 2]);
+    if (this.difficulty === "hard") a = MathUtils.randomElement([-0.5, 0.5]);
+
     const b = MathUtils.randomElement([-3, -2, 2, 3]);
+
     const aSign = a > 0 ? ">" : "<";
     const bSign = b > 0 ? ">" : "<";
     const correct = `$$a ${aSign} 0$$ i $$b ${bSign} 0$$`;
@@ -46,25 +76,47 @@ class LinearFunctionGenerator extends BaseGenerator {
       correctAnswer: correct,
       distractors: [wrong1, wrong2, wrong3],
       steps: [
-        `Współczynnik $$a$$: funkcja ${a > 0 ? "rosnąca" : "malejąca"}, więc $$a ${aSign} 0$$.`,
-        `Współczynnik $$b$$ (przecięcie z OY): punkt ${b > 0 ? "nad osią" : "pod osią"}, więc $$b ${bSign} 0$$.`,
+        `Współczynnik $$a$$ decyduje o monotoniczności. Funkcja jest ${a > 0 ? "rosnąca" : "malejąca"}, więc $$a ${aSign} 0$$.`,
+        `Współczynnik $$b$$ to punkt przecięcia z osią $$Oy$$ ($$0, b$$). Punkt ten leży ${b > 0 ? "nad osią" : "pod osią"} $$Ox$$, więc $$b ${bSign} 0$$.`,
       ],
     });
   }
 
   generateLinearMonotonicityParam() {
-    const coeffM = MathUtils.randomElement([2, 3, 4, -2, -3]);
+    // f(x) = (Am + B)x + C
+
+    let coeffM, constRange;
+    if (this.difficulty === "easy") {
+      coeffM = MathUtils.randomElement([2, 3]);
+      constRange = [-6, 6];
+    } else if (this.difficulty === "hard") {
+      coeffM = MathUtils.randomElement([-2, -3, -4]);
+      constRange = [-12, 12];
+    } else {
+      coeffM = MathUtils.randomElement([-2, 2]);
+      constRange = [-8, 8];
+    }
+
+    const constVal = MathUtils.randomInt(constRange[0], constRange[1]);
     const validConst =
       MathUtils.randomInt(1, 4) *
       Math.abs(coeffM) *
       (Math.random() > 0.5 ? 1 : -1);
+
     const bracket = `${coeffM}m ${validConst >= 0 ? "+" : "-"} ${Math.abs(validConst)}`;
     const type = MathUtils.randomElement(["rosnąca", "malejąca"]);
     const boundary = -validConst / coeffM;
 
     let finalSign;
-    if (type === "rosnąca") finalSign = coeffM > 0 ? ">" : "<";
-    else finalSign = coeffM > 0 ? "<" : ">";
+    // type=rosnaca -> (coeff)m > -const
+    // type=malejaca -> (coeff)m < -const
+    // if coeff < 0, reverse sign
+
+    if (type === "rosnąca") {
+      finalSign = coeffM > 0 ? ">" : "<";
+    } else {
+      finalSign = coeffM > 0 ? "<" : ">";
+    }
 
     return this.createResponse({
       question: `Funkcja liniowa $$f(x) = (${bracket})x + 5$$ jest ${type} dla:`,
@@ -78,8 +130,10 @@ class LinearFunctionGenerator extends BaseGenerator {
         `$$m ${finalSign} ${-boundary}$$`,
       ],
       steps: [
+        `Funkcja liniowa jest ${type}, gdy jej współczynnik kierunkowy $$a$$ jest ${type === "rosnąca" ? "dodatni ($$a>0$$)" : "ujemny ($$a<0$$)"}.`,
         `$$${bracket} ${type === "rosnąca" ? ">" : "<"} 0$$`,
         `$$${coeffM}m ${type === "rosnąca" ? ">" : "<"} ${-validConst}$$`,
+        `Dzielimy przez $$${coeffM}$$ ${coeffM < 0 ? "(pamiętając o zmianie znaku!)" : ""}:`,
         `$$m ${finalSign} ${boundary}$$`,
       ],
     });
@@ -104,15 +158,15 @@ class LinearFunctionGenerator extends BaseGenerator {
         `${a > 0 ? "malejąca" : "rosnąca"} i jej wykres przecina oś $$Oy$$ w punkcie $$(${b}, 0)$$`,
       ],
       steps: [
-        `$$a = ${a}$$ (${monotonicity}).`,
-        `$$b = ${b}$$, punkt $$(0, ${b})$$.`,
+        `Współczynnik kierunkowy $$a = ${a}$$ (${monotonicity}).`,
+        `Wyraz wolny $$b = ${b}$$ (punkt $$(0, ${b})$$).`,
       ],
     });
   }
 
   formatLinear(a, b) {
-    const aS = this.fractionToLatex(a);
-    const xPart = aS === "1" ? "x" : aS === "-1" ? "-x" : `${aS}x`;
+    const aStr = this.fractionToLatex(a);
+    const xPart = aStr === "1" ? "x" : aStr === "-1" ? "-x" : `${aStr}x`;
     const bS =
       b === 0
         ? ""
