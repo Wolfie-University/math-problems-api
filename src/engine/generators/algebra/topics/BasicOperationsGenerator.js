@@ -3,10 +3,32 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class BasicOperationsGenerator extends BaseGenerator {
   generatePowerProblem() {
-    const base = MathUtils.randomElement([2, 3, 5]);
-    const n = MathUtils.randomInt(-5, 5);
-    const k = MathUtils.randomInt(-4, 4);
-    const m = MathUtils.randomInt(-5, 5);
+    // difficulty
+    let bases, nRange, kRange, mRange;
+
+    if (this.difficulty === "easy") {
+      bases = [2, 3, 5];
+      nRange = [1, 4];
+      kRange = [1, 3];
+      mRange = [1, 4];
+    } else if (this.difficulty === "hard") {
+      bases = [2, 3, 5, 6, 7, 10];
+      nRange = [-8, 8];
+      kRange = [-6, 6];
+      mRange = [-8, 8];
+    } else {
+      // medium
+      bases = [2, 3, 5, 6];
+      nRange = [-5, 5];
+      kRange = [-4, 4];
+      mRange = [-5, 5];
+    }
+
+    const base = MathUtils.randomElement(bases);
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
+    const k = MathUtils.randomInt(kRange[0], kRange[1]);
+    const m = MathUtils.randomInt(mRange[0], mRange[1]);
+
     const finalExp = n + 2 * k - m;
     const baseSq = base * base;
 
@@ -31,12 +53,34 @@ class BasicOperationsGenerator extends BaseGenerator {
   }
 
   generateRootsProblem() {
-    const root = MathUtils.randomElement([2, 3, 5, 6, 7]);
-    const f1 = MathUtils.randomInt(2, 6);
-    const f2 = MathUtils.randomInt(1, f1 - 1);
+    // difficulty
+    let roots, f1Range, f2Range, opList;
+
+    if (this.difficulty === "easy") {
+      roots = [2, 3, 5];
+      f1Range = [2, 4];
+      f2Range = [1, 3];
+      opList = ["+", "-"];
+    } else if (this.difficulty === "hard") {
+      roots = [2, 3, 5, 6, 7, 10, 11];
+      f1Range = [5, 12];
+      f2Range = [2, 10];
+      opList = ["-", "+"];
+    } else {
+      roots = [2, 3, 5, 7];
+      f1Range = [2, 6];
+      f2Range = [1, 5];
+      opList = ["-", "+"];
+    }
+
+    const root = MathUtils.randomElement(roots);
+    const f1 = MathUtils.randomInt(f1Range[0], f1Range[1]);
+    const f2 = MathUtils.randomInt(f2Range[0], Math.min(f1 - 1, f2Range[1]));
+
     const largeVal = f1 * f1 * root;
     const smallVal = f2 * f2 * root;
-    const op = MathUtils.randomElement(["-", "+"]);
+    const op = MathUtils.randomElement(opList);
+
     const resultFactor = op === "-" ? f1 - f2 : f1 + f2;
     const latex = `\\sqrt{${largeVal}} ${op} \\sqrt{${smallVal}}`;
     const correctAnswer = `${resultFactor}\\sqrt{${root}}`;
@@ -61,15 +105,36 @@ class BasicOperationsGenerator extends BaseGenerator {
   }
 
   generateScientificProblem() {
-    const b_base = MathUtils.randomInt(2, 8);
-    const multiplier = MathUtils.randomElement([2, 3, 4, 1.5, 2.5]);
+    // difficulty
+    let bBaseRange, multipliers, expRange;
+
+    if (this.difficulty === "easy") {
+      bBaseRange = [2, 5];
+      multipliers = [2, 3, 4];
+      expRange = [2, 6];
+    } else if (this.difficulty === "hard") {
+      bBaseRange = [2, 9];
+      multipliers = [1.5, 2.5, 0.5, 0.2];
+      expRange = [-15, 15];
+    } else {
+      bBaseRange = [2, 8];
+      multipliers = [2, 3, 4, 1.5, 2.5];
+      expRange = [-10, 10];
+    }
+
+    const b_base = MathUtils.randomInt(bBaseRange[0], bBaseRange[1]);
+    const multiplier = MathUtils.randomElement(multipliers);
     const a_base = b_base * multiplier;
-    const k = MathUtils.randomInt(-10, 10);
-    const m = MathUtils.randomInt(-10, 10);
-    const mantissa = a_base / b_base;
+
+    const k = MathUtils.randomInt(expRange[0], expRange[1]);
+    const m = MathUtils.randomInt(expRange[0], expRange[1]);
+
+    const mantissa = a_base / b_base; // = multiplier
     const exponent = k - m;
+
     let finalMantissa = mantissa;
     let finalExponent = exponent;
+
     if (finalMantissa >= 10) {
       finalMantissa /= 10;
       finalExponent += 1;
@@ -78,29 +143,49 @@ class BasicOperationsGenerator extends BaseGenerator {
       finalExponent -= 1;
     }
 
+    const formatNum = (num) => (Number.isInteger(num) ? `${num}` : `${num}`);
+
     return this.createResponse({
       question: "Wartość wyrażenia jest równa:",
-      latex: `\\frac{${a_base} \\cdot 10^{${k}}}{${b_base} \\cdot 10^{${m}}}`,
+      latex: `\\frac{${formatNum(a_base)} \\cdot 10^{${k}}}{${formatNum(b_base)} \\cdot 10^{${m}}}`,
       image: null,
       variables: { a_base, b_base, k, m },
-      correctAnswer: `${finalMantissa} \\cdot 10^{${finalExponent}}`,
+      correctAnswer: `${formatNum(finalMantissa)} \\cdot 10^{${finalExponent}}`,
       distractors: [
-        `${finalMantissa} \\cdot 10^{${k - m}}`,
-        `${mantissa * 10} \\cdot 10^{${exponent}}`,
-        `${a_base - b_base} \\cdot 10^{${k - m}}`,
+        `${formatNum(finalMantissa)} \\cdot 10^{${k - m}}`,
+        `${formatNum(mantissa * 10)} \\cdot 10^{${exponent}}`,
+        `${formatNum(a_base - b_base)} \\cdot 10^{${k - m}}`,
       ],
       steps: [
-        `$$${a_base}:${b_base}=${mantissa}$$`,
+        `$$${formatNum(a_base)}:${formatNum(b_base)}=${formatNum(mantissa)}$$`,
         `$$10^{${k}}:10^{${m}}=10^{${k - m}}$$`,
-        `Normalizacja: $$${finalMantissa} \\cdot 10^{${finalExponent}}$$`,
+        `Normalizacja: $$${formatNum(finalMantissa)} \\cdot 10^{${finalExponent}}$$`,
       ],
     });
   }
 
   generateExponentRootConversion() {
-    const a = MathUtils.randomElement([2, 3, 5, 7]);
-    const n = MathUtils.randomInt(3, 5);
-    const m = MathUtils.randomInt(2, 5);
+    // difficulty
+    let aList, nRange, mRange;
+
+    if (this.difficulty === "easy") {
+      aList = [2, 3, 5];
+      nRange = [2, 3];
+      mRange = [1, 2];
+    } else if (this.difficulty === "hard") {
+      aList = [2, 3, 5, 7, 11, 13];
+      nRange = [3, 7];
+      mRange = [2, 9];
+    } else {
+      aList = [2, 3, 5, 7];
+      nRange = [3, 5];
+      mRange = [2, 5];
+    }
+
+    const a = MathUtils.randomElement(aList);
+    const n = MathUtils.randomInt(nRange[0], nRange[1]);
+    const m = MathUtils.randomInt(mRange[0], mRange[1]);
+
     const resNum = 2 * m + n;
     const resDen = 2 * n;
 
