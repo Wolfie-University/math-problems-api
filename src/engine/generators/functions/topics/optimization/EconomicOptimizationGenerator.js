@@ -8,7 +8,11 @@ class EconomicOptimizationGenerator extends BaseGenerator {
         id: "electronics",
         subject: "słuchawek bezprzewodowych",
         unit: "zł",
-        ranges: { price: [80, 150], sales: [40, 100], stepSales: [2, 5] },
+        ranges: {
+          easy: { price: [50, 100], sales: [20, 50] },
+          medium: { price: [80, 150], sales: [40, 100] },
+          hard: { price: [200, 400], sales: [100, 300] },
+        },
         template: (price, sales, stepP, stepS, subject, unit) =>
           `Sklep z elektroniką sprzedaje dziennie ${sales} sztuk ${subject} w cenie ${price} ${unit} za sztukę. ` +
           `Badania rynku pokazały, że każda obniżka ceny o ${stepP} ${unit} powoduje wzrost sprzedaży o ${stepS} sztuk. ` +
@@ -18,7 +22,11 @@ class EconomicOptimizationGenerator extends BaseGenerator {
         id: "hotel",
         subject: "pokoi",
         unit: "zł",
-        ranges: { price: [180, 300], sales: [20, 50], stepSales: [1, 3] },
+        ranges: {
+          easy: { price: [100, 200], sales: [10, 30] },
+          medium: { price: [180, 300], sales: [20, 50] },
+          hard: { price: [300, 600], sales: [50, 100] },
+        },
         template: (price, sales, stepP, stepS, subject, unit) =>
           `Właściciel hotelu zauważył, że przy cenie wynajmu wynoszącej ${price} ${unit} za dobę, zajętych jest ${sales} ${subject}. ` +
           `Każde obniżenie ceny o ${stepP} ${unit} sprawia, że wynajmowanych jest o ${stepS} pokoi więcej. ` +
@@ -28,7 +36,11 @@ class EconomicOptimizationGenerator extends BaseGenerator {
         id: "tutor",
         subject: "kurs online",
         unit: "zł",
-        ranges: { price: [40, 90], sales: [100, 300], stepSales: [5, 15] },
+        ranges: {
+          easy: { price: [20, 50], sales: [50, 100] },
+          medium: { price: [40, 90], sales: [100, 300] },
+          hard: { price: [100, 200], sales: [200, 500] },
+        },
         template: (price, sales, stepP, stepS, subject, unit) =>
           `Platforma edukacyjna oferuje ${subject} w cenie ${price} ${unit}. Obecnie z kursu korzysta ${sales} uczniów miesięcznie. ` +
           `Analiza wykazała, że każda obniżka ceny o ${stepP} ${unit} przyciągnie ${stepS} nowych uczniów. ` +
@@ -37,35 +49,39 @@ class EconomicOptimizationGenerator extends BaseGenerator {
     ];
 
     const scenario = MathUtils.randomElement(scenarios);
+    const diffRanges =
+      scenario.ranges[this.difficulty] || scenario.ranges.medium;
+
     const stepPrice = 1;
-    const stepSales = MathUtils.randomInt(
-      scenario.ranges.stepSales[0],
-      scenario.ranges.stepSales[1],
-    );
+    const stepSales =
+      this.difficulty === "hard"
+        ? MathUtils.randomInt(5, 15)
+        : MathUtils.randomInt(2, 5);
 
     let startPrice, startSales, p;
     let attempts = 0;
 
     do {
       startPrice = MathUtils.randomInt(
-        scenario.ranges.price[0],
-        scenario.ranges.price[1],
+        diffRanges.price[0],
+        diffRanges.price[1],
       );
       startSales = MathUtils.randomInt(
-        scenario.ranges.sales[0],
-        scenario.ranges.sales[1],
+        diffRanges.sales[0],
+        diffRanges.sales[1],
       );
 
       const b = startPrice * stepSales - startSales;
       const doubleA = 2 * -stepSales;
       p = -b / doubleA;
       attempts++;
-    } while (
-      (!Number.isInteger(p) || p <= 0 || p >= startPrice) &&
-      attempts < 100
-    );
 
-    if (!Number.isInteger(p)) {
+      if (this.difficulty !== "hard" && !Number.isInteger(p)) p = -1; // force retry
+      if (this.difficulty === "hard" && !Number.isInteger(p * 2)) p = -1; // force retry if not .0 or .5
+    } while ((p <= 0 || p >= startPrice) && attempts < 100);
+
+    if (p <= 0) {
+      // fallback
       startPrice = 50;
       startSales = 100;
       p = (50 * stepSales - 100) / (2 * stepSales);
@@ -75,6 +91,11 @@ class EconomicOptimizationGenerator extends BaseGenerator {
     const newPrice = startPrice - x;
     const newSales = startSales + stepSales * x;
     const maxRevenue = newPrice * newSales;
+
+    const xStr = Number.isInteger(x) ? `${x}` : x.toFixed(1);
+    const newPriceStr = Number.isInteger(newPrice)
+      ? `${newPrice}`
+      : newPrice.toFixed(1);
 
     const questionText = scenario.template(
       startPrice,
@@ -98,40 +119,59 @@ class EconomicOptimizationGenerator extends BaseGenerator {
       variables: { startPrice, startSales, stepSales, optimalX: x },
       correctAnswer:
         scenario.id === "hotel" || scenario.id === "electronics"
-          ? `${newPrice} ${scenario.unit}`
-          : `${x} ${scenario.unit}`,
+          ? `${newPriceStr} ${scenario.unit}`
+          : `${xStr} ${scenario.unit}`,
       distractors: [
-        `${x + 5} ${scenario.unit}`,
-        `${newPrice - 10} ${scenario.unit}`,
+        `${Number(xStr) + 5} ${scenario.unit}`,
+        `${Number(newPriceStr) - 10} ${scenario.unit}`,
         `${startPrice} ${scenario.unit}`,
       ],
       steps: [
         `Oznaczmy przez $$x$$ kwotę obniżki. Nowa cena: $$${startPrice} - x$$. Nowa sprzedaż: $$${startSales} + ${stepSales}x$$.`,
         `Funkcja przychodu: $$P(x) = (${startPrice} - x)(${startSales} + ${stepSales}x)$$`,
         `Po wymnożeniu: $$P(x) = -${stepSales}x^2 + ${startPrice * stepSales - startSales}x + ${startPrice * startSales}$$`,
-        `Wierzchołek paraboli (maksimum): $$p = \\frac{-b}{2a} = \\frac{-(${startPrice * stepSales - startSales})}{2 \\cdot (-${stepSales})} = ${x}$$`,
+        `Wierzchołek paraboli (maksimum): $$p = \\frac{-b}{2a} = ${xStr}$$`,
         scenario.id === "hotel" || scenario.id === "electronics"
-          ? `Szukana cena: $$${startPrice} - ${x} = ${newPrice}$$ ${scenario.unit}.`
-          : `Należy obniżyć cenę o $$${x}$$ ${scenario.unit}.`,
+          ? `Szukana cena: $$${startPrice} - ${xStr} = ${newPriceStr}$$ ${scenario.unit}.`
+          : `Należy obniżyć cenę o $$${xStr}$$ ${scenario.unit}.`,
       ],
     });
   }
 
   generateDensityProblem() {
+    let treeRange, lossList;
+    if (this.difficulty === "easy") {
+      treeRange = [40, 60];
+      lossList = [1, 2];
+    } else if (this.difficulty === "hard") {
+      treeRange = [80, 150];
+      lossList = [2, 3, 4];
+    } else {
+      treeRange = [50, 80];
+      lossList = [1, 2];
+    }
+
     const scenario = {
       subject: "drzew",
       unit: "szt.",
-      template: (fruits, trees, stepFruits, subject) =>
+      template: (fruits, trees, stepFruits, stepTrees, subject) =>
         `Sadownik zauważył, że jeśli posadzi ${trees} ${subject} na hektar, to z każdego zbierze średnio ${fruits} kg owoców. ` +
         `Każde dodatkowe posadzone drzewo (powyżej liczby ${trees}) powoduje zmniejszenie plonu z każdego drzewa o ${stepFruits} kg. ` +
         `Ile drzew należy dosadzić, aby łączny plon z sadu był największy?`,
     };
 
-    const startTrees = MathUtils.randomInt(50, 80);
-    const lossPerTree = MathUtils.randomElement([1, 2]);
+    const startTrees = MathUtils.randomInt(treeRange[0], treeRange[1]);
+    const lossPerTree = MathUtils.randomElement(lossList);
     const targetX = MathUtils.randomInt(5, 15);
-    const calculatedStartFruits =
-      2 * lossPerTree * targetX + startTrees * lossPerTree;
+
+    // P(x) = (startTrees + x)(startFruits - loss*x)
+    // x1 = -startTrees, x2 = startFruits/loss
+    // p = (x1+x2)/2 = targetX
+    // 2*targetX = -startTrees + startFruits/loss
+    // startFruits/loss = 2*targetX + startTrees
+    // startFruits = loss * (2*targetX + startTrees)
+
+    const calculatedStartFruits = lossPerTree * (2 * targetX + startTrees);
 
     const questionText = scenario.template(
       calculatedStartFruits,
@@ -164,13 +204,14 @@ class EconomicOptimizationGenerator extends BaseGenerator {
         `Plon z jednego drzewa: $$${calculatedStartFruits} - ${lossPerTree}x$$.`,
         `Funkcja plonu całkowitego: $$P(x) = (${startTrees} + x)(${calculatedStartFruits} - ${lossPerTree}x)$$`,
         `Jest to funkcja kwadratowa o ramionach w dół. Obliczamy wierzchołek $$p$$.`,
-        `$$p = ${targetX}$$`,
+        `Miejsca zerowe: $$x_1 = -${startTrees}$$, $$x_2 = ${calculatedStartFruits / lossPerTree}$$.`,
+        `Wierzchołek leży pośrodku: $$p = \\frac{-${startTrees} + ${calculatedStartFruits / lossPerTree}}{2} = ${targetX}$$`,
         `Należy dosadzić $$${targetX}$$ drzew.`,
       ],
     });
   }
 
-  generateParabolaSVG() {
+  generateParabolaSVG(startP, startS, step, optX, maxRev, isDensity = false) {
     const size = 300;
     const center = size / 2;
     let pathData = "";

@@ -3,7 +3,16 @@ const MathUtils = require("../../../../utils/MathUtils");
 
 class GeometricOptimizationGenerator extends BaseGenerator {
   generateFencingProblem() {
-    const L = MathUtils.randomInt(3, 8) * 12;
+    let rangeL;
+    if (this.difficulty === "easy") {
+      rangeL = [2, 4];
+    } else if (this.difficulty === "hard") {
+      rangeL = [10, 20];
+    } else {
+      rangeL = [5, 9];
+    }
+
+    const L = MathUtils.randomInt(rangeL[0], rangeL[1]) * 12;
     const x = L / 12;
     const y = (L - 6 * x) / 4;
     const maxArea = 3 * x * y;
@@ -30,7 +39,16 @@ class GeometricOptimizationGenerator extends BaseGenerator {
   }
 
   generateCuboidProblem() {
-    const S = MathUtils.randomInt(2, 8) * 12;
+    let rangeS;
+    if (this.difficulty === "easy") {
+      rangeS = [2, 4];
+    } else if (this.difficulty === "hard") {
+      rangeS = [8, 12];
+    } else {
+      rangeS = [4, 8];
+    }
+
+    const S = MathUtils.randomInt(rangeS[0], rangeS[1]) * 12;
     const a = S / 12;
     const h = S / 4 - 2 * a;
     const Pc = 2 * a * a + 4 * a * h;
@@ -51,7 +69,16 @@ class GeometricOptimizationGenerator extends BaseGenerator {
   }
 
   generateTrapezoidProblem() {
-    const a = MathUtils.randomInt(4, 10) * 2;
+    let rangeA;
+    if (this.difficulty === "easy") {
+      rangeA = [2, 4];
+    } else if (this.difficulty === "hard") {
+      rangeA = [8, 12];
+    } else {
+      rangeA = [4, 8];
+    }
+
+    const a = MathUtils.randomInt(rangeA[0], rangeA[1]) * 2;
     const S = a + MathUtils.randomInt(2, 6) * 2;
     const h_opt = (a + S) / 2;
     const b_opt = S - h_opt;
