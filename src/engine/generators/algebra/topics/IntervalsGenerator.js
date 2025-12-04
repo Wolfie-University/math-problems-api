@@ -3,15 +3,32 @@ const MathUtils = require("../../../utils/MathUtils");
 
 class IntervalsGenerator extends BaseGenerator {
   generateAbsValueProblem() {
-    const a = MathUtils.randomInt(-5, 5);
-    const b = MathUtils.randomInt(1, 6);
+    // |x - a| < b
+    let centerRange, radiusRange;
+
+    if (this.difficulty === "easy") {
+      centerRange = [-3, 3];
+      radiusRange = [1, 4];
+    } else if (this.difficulty === "hard") {
+      centerRange = [-10, 10];
+      radiusRange = [5, 12];
+    } else {
+      centerRange = [-5, 5];
+      radiusRange = [1, 6];
+    }
+
+    const a = MathUtils.randomInt(centerRange[0], centerRange[1]);
+    const b = MathUtils.randomInt(radiusRange[0], radiusRange[1]);
     const sign = MathUtils.randomElement(["<", ">", "\\le", "\\ge"]);
+
     const x1 = a - b;
     const x2 = a + b;
     const isInside = sign === "<" || sign === "\\le";
     const isClosed = sign === "\\le" || sign === "\\ge";
+
     const bL = isClosed ? "\\langle" : "(";
     const bR = isClosed ? "\\rangle" : ")";
+
     const interval = isInside
       ? `${bL} ${x1}, ${x2} ${bR}`
       : `(- \\infty, ${x1} ${bR} \\cup ${bL} ${x2}, \\infty)`;
@@ -38,28 +55,60 @@ class IntervalsGenerator extends BaseGenerator {
         `x \\in ${bL} ${-b}, ${b} ${bR}`,
       ],
       steps: [
-        `Środek $$${a}$$, promień $$${b}$$.`,
-        `Odległość od $$${a}$$ ${isInside ? "mniejsza" : "większa"} niż $$${b}$$.`,
+        `Środek przedziału to $$a = ${a}$$, a promień (odległość od środka) to $$b = ${b}$$.`,
+        `Szukamy liczb, których odległość od $$${a}$$ jest ${isInside ? "mniejsza" : "większa"} ${isClosed ? "lub równa" : ""} $$${b}$$.`,
+        `Odp: $$${interval}$$`,
       ],
     });
   }
 
   generateIntervalOpsProblem() {
-    const a = MathUtils.randomInt(-5, 2);
-    const b = a + MathUtils.randomInt(-2, 4);
+    // A u B / A n B
+    let range;
+    if (this.difficulty === "easy") {
+      range = [-3, 3];
+    } else if (this.difficulty === "hard") {
+      range = [-8, 8];
+    } else {
+      range = [-5, 5];
+    }
+
+    const a = MathUtils.randomInt(range[0], range[1]);
+    const offset =
+      this.difficulty === "hard"
+        ? MathUtils.randomInt(-1, 3)
+        : MathUtils.randomInt(-2, 4);
+
+    const b = a + offset;
+
     const closedA = MathUtils.randomElement([true, false]);
     const closedB = MathUtils.randomElement([true, false]);
     const op = MathUtils.randomElement(["union", "intersection"]);
     const opSymbol = op === "union" ? "\\cup" : "\\cap";
+
     const bracketA = closedA ? "\\rangle" : ")";
     const bracketB = closedB ? "\\langle" : "(";
 
     let result = "";
+    // A = (-inf, a>
+    // B = <b, inf)
+
     if (b > a) {
+      // A ... a   b ... B
       if (op === "intersection") result = `\\emptyset`;
       else
         result = `(- \\infty, ${a} ${bracketA} \\cup ${bracketB} ${b}, \\infty)`;
+    } else if (b === a) {
+      if (op === "intersection") {
+        if (closedA && closedB) result = `\\{ ${a} \\}`;
+        else result = `\\emptyset`;
+      } else {
+        if (!closedA && !closedB)
+          result = `(- \\infty, ${a}) \\cup (${a}, \\infty)`;
+        else result = `\\mathbb{R}`;
+      }
     } else {
+      // <b, a>
       if (op === "intersection") result = `${bracketB} ${b}, ${a} ${bracketA}`;
       else result = `\\mathbb{R}`;
     }
@@ -83,8 +132,13 @@ class IntervalsGenerator extends BaseGenerator {
         `(- \\infty, ${b} ${bracketB}`,
       ],
       steps: [
-        `Zaznaczamy przedziały.`,
-        b > a ? `Rozłączne.` : `Nachodzą na siebie.`,
+        `Zaznaczamy przedziały na osi liczbowej.`,
+        b > a
+          ? `Przedziały są rozłączne.`
+          : b === a
+            ? `Przedziały stykają się w punkcie $$${a}$$.`
+            : `Przedziały zachodzą na siebie.`,
+        `Odp: $$${result}$$`,
       ],
     });
   }
