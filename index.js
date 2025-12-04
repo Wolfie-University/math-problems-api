@@ -160,3 +160,5 @@ const port = process.env.PORT || 3333;
 app.listen(port, () => {
   console.log(`Serwer działa na porcie ${port}`);
 });
+
+module.exports = app;
