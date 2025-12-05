@@ -115,7 +115,7 @@ class IntervalsGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Wyznacz $$A ${opSymbol} B$$ dla przedziałów z rysunku.`,
-      latex: `A ${opSymbol} B`,
+      latex: null,
       image: this.generateNumberLineSVG({
         type: "sets",
         a,

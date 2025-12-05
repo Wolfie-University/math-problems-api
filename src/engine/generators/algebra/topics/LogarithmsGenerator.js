@@ -28,8 +28,9 @@ class LogarithmsGenerator extends BaseGenerator {
     const X = Y * ratio;
 
     return this.createResponse({
-      question: "Wartość wyrażenia jest równa:",
-      latex: `\\log_{${base}} ${X} - \\log_{${base}} ${Y}`,
+      question:
+        "Wartość wyrażenia $$\\log_{${base}} ${X} - \\log_{${base}} ${Y}$$ jest równa:",
+      latex: null,
       image: null,
       variables: { base, X, Y, result },
       correctAnswer: `${result}`,

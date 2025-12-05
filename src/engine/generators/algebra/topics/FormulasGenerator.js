@@ -28,8 +28,8 @@ class FormulasGenerator extends BaseGenerator {
     const answer = `${constantPart} ${sign} ${rootPart}\\sqrt{${a}}`;
 
     return this.createResponse({
-      question: "Liczba jest równa:",
-      latex: `(\\sqrt{${a}} ${sign} ${b})^2`,
+      question: "Liczba $$(\\sqrt{${a}} ${sign} ${b})^2$$ jest równa:",
+      latex: null,
       image: null,
       variables: { a, b, sign },
       correctAnswer: answer,
@@ -73,7 +73,7 @@ class FormulasGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Dla każdej liczby rzeczywistej $$${variable}$$ wyrażenie $$${expr}$$ jest równe:`,
-      latex: expr,
+      latex: null,
       image: null,
       variables: { a, b },
       correctAnswer: correctAnswer,
@@ -131,8 +131,8 @@ class FormulasGenerator extends BaseGenerator {
     }
 
     return this.createResponse({
-      question: `Wyrażenie $$${nom}$$ podzielone przez $$${den}$$ jest równe:`,
-      latex: `\\frac{${nom}}{${den}}`,
+      question: `Wyrażenie $$\\frac{${nom}}{${den}}$$ jest równe:`,
+      latex: null,
       image: null,
       variables: { a, k, type },
       correctAnswer: res,

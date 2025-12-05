@@ -28,10 +28,10 @@ class NumbersGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Cena towaru została obniżona o $$${p}\\%$$. Po obniżce towar kosztuje $$${finalPriceStr}$$ zł. Cena początkowa wynosiła:`,
-      latex: `p = ${p}\\%`,
+      latex: null,
       image: null,
       variables: { p, originalPrice, finalPrice },
-      correctAnswer: `${originalPrice} zł`,
+      correctAnswer: `${originalPrice}`,
       distractors: [
         `${(finalPrice * (1 + p / 100)).toFixed(2).replace(".00", "")} zł`,
         `${originalPrice - 10} zł`,
@@ -68,8 +68,8 @@ class NumbersGenerator extends BaseGenerator {
     const s = MathUtils.randomElement(scenarios);
 
     return this.createResponse({
-      question: `Liczba $$x$$ jest o $$${s.p}\\%$$ większa od liczby $$y$$. Wynika stąd, że:`,
-      latex: `x = y + ${s.p}\\%y`,
+      question: `Liczba $$x$$ jest o $$${s.p}\\%$$ większa od liczby $$y$$. Wynika stąd, że $$y=?$$`,
+      latex: null,
       image: null,
       variables: { p: s.p },
       correctAnswer: `y = ${s.b_frac}x`,
@@ -113,7 +113,7 @@ class NumbersGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Liczba $$y=${yStr}$$ jest przybliżeniem liczby $$x=${x}$$. Błąd względny wynosi:`,
-      latex: `x=${x}, y=${yStr}`,
+      latex: null,
       image: null,
       variables: { x, y },
       correctAnswer: `${errorPercent}\\%`,
