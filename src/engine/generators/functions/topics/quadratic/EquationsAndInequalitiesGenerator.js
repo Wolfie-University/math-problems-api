@@ -43,17 +43,7 @@ class EquationsAndInequalitiesGenerator extends BaseGenerator {
     return this.createResponse({
       question: "Rozwiąż nierówność:",
       latex: `${MathUtils.formatPolynomial(a, b, c)} ${sign} 0`,
-      image: SVGUtils.generateSVG({
-        a,
-        b,
-        c,
-        p: (x1 + x2) / 2,
-        q: 0,
-        x1,
-        x2,
-        highlight: "inequality",
-        inequalitySign: sign,
-      }),
+      image: null,
       variables: { x1, x2 },
       correctAnswer: `x \\in ${res}`,
       distractors: [
@@ -108,7 +98,7 @@ class EquationsAndInequalitiesGenerator extends BaseGenerator {
     const prod = formatFrac(c, a);
 
     return this.createResponse({
-      question: `Suma i iloczyn pierwiastków równania $$${MathUtils.formatPolynomial(a, b, c)} = 0$$:`,
+      question: `Suma i iloczyn pierwiastków równania $$${MathUtils.formatPolynomial(a, b, c)} = 0$$ wynoszą odpowiednio:`,
       latex: ``,
       image: null,
       variables: {},

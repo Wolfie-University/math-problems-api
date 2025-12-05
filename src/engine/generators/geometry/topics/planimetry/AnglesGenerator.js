@@ -24,19 +24,11 @@ class AnglesGenerator extends BaseGenerator {
       question:
         mode === "vertical"
           ? `Kąty $$\\alpha$$ i $$\\beta$$ są wierzchołkowe. 
-
-[Image of vertical angles geometry]
  Jeśli $$\\alpha = ${alphaStr}^\\circ$$, to $$\\beta$$ wynosi:`
           : `Kąty $$\\alpha$$ i $$\\beta$$ są przyległe. 
-
-[Image of supplementary angles geometry]
  Jeśli $$\\alpha = ${alphaStr}^\\circ$$, to $$\\beta$$ wynosi:`,
       latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "intersecting_lines",
-        alpha,
-        mode,
-      }),
+      image: null,
       variables: { alpha, beta, mode },
       correctAnswer:
         mode === "vertical" ? `${alphaStr}^\\circ` : `${betaStr}^\\circ`,

@@ -172,9 +172,9 @@ class TrianglesGenerator extends BaseGenerator {
 
     const P2 = P1 * k * k;
     return this.createResponse({
-      question: `Trójkąt $$T_1$$ jest podobny do $$T_2$$ w skali $$k=${k}$$. Pole $$T_1$$ wynosi $$${P1}$$. Pole $$T_2$$ to:`,
+      question: `Trójkąt $$T_1$$ jest podobny do $$T_2$$ w skali $$k=${k}$$. Pole $$T_1$$ wynosi $$${P1}$$. Pole $$T_2$$ wynosi:`,
       latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({ type: "similarity", k }),
+      image: null,
       variables: { P1, k },
       correctAnswer: `${P2}`,
       distractors: [`${P1 * k}`, `${P1 + k}`, `${P1 * k * 2}`],
@@ -210,14 +210,9 @@ class TrianglesGenerator extends BaseGenerator {
     }
 
     return this.createResponse({
-      question: `Boki $$${a}, ${b}$$, kąt $$${angle}^\\circ$$. Pole trójkąta:`,
+      question: `Boki trójkąta to odpowiednio: $$${a}, ${b}$$ oraz kąt między nimi to $$${angle}^\\circ$$. Pole trójkąta wynosi:`,
       latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "triangle_sas",
-        a,
-        b,
-        angle,
-      }),
+      image: null,
       variables: { a, b },
       correctAnswer: `${areaStr}`,
       distractors: [`${a * b}`, `${a + b}`, `${coeff}`],

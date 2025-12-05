@@ -180,16 +180,10 @@ class LinesGenerator extends BaseGenerator {
     const b2 = intY - a2 * intX;
 
     return this.createResponse({
-      question: "Punkt przecięcia prostych układu równań:",
+      question:
+        "Jakie są współrzędne punktu przecięcia prostych układu równań:",
       latex: `\\begin{cases} y=x${b1 >= 0 ? "+" : ""}${b1} \\\\ y=-x${b2 >= 0 ? "+" : ""}${b2} \\end{cases}`,
-      image: AnalyticSVGUtils.generateSVG({
-        type: "lines_intersection",
-        a1,
-        b1,
-        a2,
-        b2,
-        P: { x: intX, y: intY },
-      }),
+      image: null,
       variables: { intX, intY },
       correctAnswer: `(${intX}, ${intY})`,
       distractors: [`(${intY}, ${intX})`, `(0,0)`, `(${intX}, 0)`],
