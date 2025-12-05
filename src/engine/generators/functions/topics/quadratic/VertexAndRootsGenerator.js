@@ -108,9 +108,8 @@ class VertexAndRootsGenerator extends BaseGenerator {
     const ans = `${aStr}${core} ${q > 0 ? `+ ${q}` : q < 0 ? `- ${Math.abs(q)}` : ""}`;
 
     return this.createResponse({
-      question: "Wskaż postać kanoniczną funkcji określonej wzorem:",
+      question: "Jaka jest postać kanoniczna funkcji określonej wzorem:",
       latex: `f(x) = ${MathUtils.formatPolynomial(a, b, c)}`,
-      image: SVGUtils.generateSVG({ a, b, c, p, q, highlight: "vertex" }),
       variables: { a, b, c },
       correctAnswer: `f(x) = ${ans}`,
       distractors: [

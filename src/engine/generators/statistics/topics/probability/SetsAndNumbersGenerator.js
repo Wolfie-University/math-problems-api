@@ -133,7 +133,7 @@ class SetsAndNumbersGenerator extends BaseGenerator {
     const gcd = this.getGCD(favored, n);
 
     return this.createResponse({
-      question: `Ze zbioru $$\\{1, ..., ${n}\\}$$ losujemy liczbę. Prawdopodobieństwo, że jest podzielna przez 3 lub 5:`,
+      question: `Ze zbioru $$\\{1, ..., ${n}\\}$$ losujemy liczbę. Prawdopodobieństwo, że jest podzielna przez 3 lub 5 wynosi:`,
       latex: ``,
       image: null,
       variables: { n, favored },

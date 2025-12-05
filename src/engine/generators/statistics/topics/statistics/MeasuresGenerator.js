@@ -102,7 +102,7 @@ class MeasuresGenerator extends BaseGenerator {
       image: null,
       variables: { targetMode },
       correctAnswer: `${targetMode}`,
-      distractors: [`${numbers[0]}`, `5`, `0`],
+      distractors: [`${numbers[0]}`, `${numbers[1]}`, `${numbers[2]}`],
       steps: [`Liczba $$${targetMode}$$ występuje najczęściej.`],
     });
   }
@@ -129,7 +129,7 @@ class MeasuresGenerator extends BaseGenerator {
     const meanStr = Number.isInteger(mean) ? `${mean}` : mean.toFixed(2);
 
     return this.createResponse({
-      question: `Oceny z wagami: ${grades.map((x) => `${x.g} (waga ${x.w})`).join(", ")}. Średnia ważona:`,
+      question: `Uczeń otrzymał następujące oceny z wagami: ${grades.map((x) => `${x.g} (waga ${x.w})`).join(", ")}. Średnia ważona tych ocen jest równa:`,
       latex: ``,
       image: null,
       variables: { mean },
