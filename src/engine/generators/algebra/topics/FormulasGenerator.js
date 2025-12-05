@@ -79,9 +79,9 @@ class FormulasGenerator extends BaseGenerator {
       correctAnswer: correctAnswer,
       distractors: [`0`, `${2 * b * b}`, `${-2 * a * b}${variable}`],
       steps: [
-        `Stosujemy wzory skróconego mnożenia: $$(A-B)^2 - (A+B)^2$$`,
-        `Po rozpisaniu i redukcji wyrazów $$A^2$$ i $$B^2$$, zostaje: $$-2AB - 2AB = -4AB$$`,
-        `$$A = ${ax}, \\quad B = ${b}$$`,
+        `Stosujemy wzory skróconego mnożenia: $$(a-b)^2 - (a+b)^2$$`,
+        `Po rozpisaniu i redukcji wyrazów $$a^2$$ i $$b^2$$, zostaje: $$-2ab - 2ab = -4ab$$`,
+        `$$a = ${ax}, \\quad b = ${b}$$`,
         `$$-4 \\cdot (${ax}) \\cdot ${b} = ${resultVal}${variable}$$`,
       ],
     });
