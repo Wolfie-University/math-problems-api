@@ -30,7 +30,7 @@ class LinearFunctionGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Miejscem zerowym funkcji liniowej określonej wzorem $$f(x) = ${formula}$$ jest liczba:`,
-      latex: formula,
+      latex: ``,
       image: null,
       variables: { a, b, root },
       correctAnswer: `${root}`,
@@ -148,7 +148,7 @@ class LinearFunctionGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Dana jest funkcja liniowa określona wzorem $$${formula}$$. Funkcja ta jest:`,
-      latex: formula,
+      latex: ``,
       image: this.generateSVG({ type: "linear", a, b }),
       variables: { a, b },
       correctAnswer: `${monotonicity} i jej wykres przecina oś $$Oy$$ w punkcie $$${intercept}$$`,
