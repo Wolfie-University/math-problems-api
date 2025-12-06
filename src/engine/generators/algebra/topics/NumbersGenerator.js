@@ -31,7 +31,7 @@ class NumbersGenerator extends BaseGenerator {
       latex: null,
       image: null,
       variables: { p, originalPrice, finalPrice },
-      correctAnswer: `${originalPrice}`,
+      correctAnswer: `${originalPrice} zł`,
       distractors: [
         `${(finalPrice * (1 + p / 100)).toFixed(2).replace(".00", "")} zł`,
         `${originalPrice - 10} zł`,
