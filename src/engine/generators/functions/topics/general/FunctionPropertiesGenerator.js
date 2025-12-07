@@ -156,8 +156,7 @@ class FunctionPropertiesGenerator extends BaseGenerator {
     }
 
     return this.createResponse({
-      question:
-        "Dziedziną funkcji $$f$$ określonej wzorem $$f(x) = \\frac{2x+1}{${denominatorLatex}}$$ jest zbiór liczb rzeczywistych z wyłączeniem jakich liczb?",
+      question: `Dziedziną funkcji $$f$$ określonej wzorem $$f(x) = \\frac{2x+1}{${denominatorLatex}}$$ jest zbiór liczb rzeczywistych z wyłączeniem jakich liczb?`,
       latex: null,
       image: null,
       variables: { x1, x2 },
