@@ -33,7 +33,7 @@ class ScalingGenerator extends BaseGenerator {
       k = MathUtils.randomInt(2, 4);
       const factor = type === "volume" ? k * k * k : k * k;
 
-      question = `Krawędź sześcianu (lub innej bryły) zmniejszono $$${k}$$-krotnie. Jego ${type === "volume" ? "objętość" : "pole powierzchni"} zmaleje:`;
+      question = `Krawędź pewnej bryły zmniejszono $$${k}$$-krotnie. Jego ${type === "volume" ? "objętość" : "pole powierzchni"} zmaleje:`;
       latexVar = `k = 1/${k}`;
 
       correct = `${factor}-krotnie`;

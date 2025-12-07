@@ -68,13 +68,9 @@ class PyramidsAndPrismsGenerator extends BaseGenerator {
       H_latex = a % 2 === 0 ? `${a / 2}\\sqrt{3}` : `\\frac{${a}\\sqrt{3}}{2}`;
 
     return this.createResponse({
-      question: `Krawędź podstawy ostrosłupa prawidłowego czworokątnego ma długość $$${a}$$. Wysokość ściany bocznej tworzy z płaszczyzną podstawy kąt $$${angle}^\\circ$$. Oblicz wysokość tego ostrosłupa`,
-      latex: `a=${a}, \\alpha=${angle}^\\circ`,
-      image: StereometrySVGUtils.generateSVG({
-        type: "pyramid_face_angle",
-        a,
-        angle,
-      }),
+      question: `Krawędź podstawy ostrosłupa prawidłowego czworokątnego ma długość $$${a}$$. Wysokość ściany bocznej tworzy z płaszczyzną podstawy kąt $$${angle}^\\circ$$. Oblicz wysokość tego ostrosłupa.`,
+      latex: null,
+      image: null,
       variables: { a, angle },
       correctAnswer: H_latex,
       distractors: [`${a}`, `${a}\\sqrt{2}`, `${a}\\sqrt{3}`],
@@ -122,8 +118,8 @@ class PyramidsAndPrismsGenerator extends BaseGenerator {
 
       return this.createResponse({
         question: `Wysokość czworościanu foremnego o krawędzi $$a=${a}$$ jest równa:`,
-        latex: `a=${a}`,
-        image: StereometrySVGUtils.generateSVG({ type: "pyramid_triangle", a }),
+        latex: null,
+        image: null,
         variables: { a },
         correctAnswer: hStr,
         distractors: [
@@ -138,8 +134,8 @@ class PyramidsAndPrismsGenerator extends BaseGenerator {
       const areaStr = `${a * a}\\sqrt{3}`;
       return this.createResponse({
         question: `Pole powierzchni całkowitej czworościanu foremnego o krawędzi $$a=${a}$$ jest równe:`,
-        latex: `a=${a}`,
-        image: StereometrySVGUtils.generateSVG({ type: "pyramid_triangle", a }),
+        latex: null,
+        image: null,
         variables: { a },
         correctAnswer: areaStr,
         distractors: [
