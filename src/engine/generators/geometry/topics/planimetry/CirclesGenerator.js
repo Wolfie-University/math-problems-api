@@ -25,11 +25,7 @@ class CirclesGenerator extends BaseGenerator {
           ? `Punkt $$O$$ jest środkiem okręgu. Kąt wpisany $$\\alpha$$ ma miarę $$${aStr}^\\circ$$. Miara kąta środkowego $$\\beta$$ opartego na tym samym łuku jest równa:`
           : `Punkt $$O$$ jest środkiem okręgu. Kąt środkowy $$\\beta$$ ma miarę $$${bStr}^\\circ$$. Miara kąta wpisanego $$\\alpha$$ opartego na tym samym łuku jest równa:`,
       latex: null,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "circle_angles",
-        alpha,
-        beta,
-      }),
+      image: null,
       variables: { alpha, beta, mode },
       correctAnswer:
         mode === "find_central" ? `${bStr}^\\circ` : `${aStr}^\\circ`,
@@ -132,12 +128,8 @@ class CirclesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Pole wycinka koła o promieniu $$${niceR}$$ i kącie środkowym $$${alpha}^\\circ$$ jest równe:`,
-      latex: `r=${niceR}, \\alpha=${alpha}^\\circ`,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "sector",
-        r: niceR,
-        alpha,
-      }),
+      latex: null,
+      image: null,
       variables: { niceR, alpha },
       correctAnswer: `${niceSectorStr}\\pi`,
       distractors: [
@@ -173,12 +165,8 @@ class CirclesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Długość łuku okręgu o promieniu $$${niceR}$$ i kącie środkowym $$${alpha}^\\circ$$ wynosi:`,
-      latex: `r=${niceR}, \\alpha=${alpha}^\\circ`,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "sector",
-        r: niceR,
-        alpha,
-      }),
+      latex: null,
+      image: null,
       variables: { niceR, alpha },
       correctAnswer: `${niceLenStr}\\pi`,
       distractors: [
@@ -204,8 +192,8 @@ class CirclesGenerator extends BaseGenerator {
     const beta = 90 - alpha;
     return this.createResponse({
       question: `Trójkąt $$ABC$$ wpisany w okrąg o średnicy $$AB$$. Kąt $$A$$ ma $$${alpha}^\\circ$$. Kąt $$B$$ ma:`,
-      latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({ type: "thales", alpha }),
+      latex: null,
+      image: null,
       variables: { alpha, beta },
       correctAnswer: `${beta}^\\circ`,
       distractors: [
@@ -239,9 +227,9 @@ class CirclesGenerator extends BaseGenerator {
     return this.createResponse({
       question:
         mode === "find_tangent"
-          ? `Promień $$r=${r}$$, odległość od środka $$d=${d}$$. Styczna $$x$$ ma długość:`
-          : `Styczna $$x=${x}$$, promień $$r=${r}$$. Odległość $$d$$ ma długość:`,
-      latex: ``,
+          ? `Promień okręgu wynosi $$r=${r}$$, odległość od środka $$d=${d}$$. Styczna $$x$$ ma długość:`
+          : `Styczna do okręgu wynosi $$x=${x}$$, promień okręgu $$r=${r}$$. Odległość $$d$$ ma długość:`,
+      latex: null,
       image: PlanimetrySVGUtils.generateSVG({
         type: "circle_tangent",
         r,

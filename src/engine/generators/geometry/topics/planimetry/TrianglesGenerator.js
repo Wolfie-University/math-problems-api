@@ -19,14 +19,8 @@ class TrianglesGenerator extends BaseGenerator {
         if (!Number.isInteger(Math.sqrt(cSq))) {
           return this.createResponse({
             question: `W trójkącie prostokątnym przyprostokątne mają długości $$${a}$$ i $$${b}$$. Oblicz długość przeciwprostokątnej.`,
-            latex: ``,
-            image: PlanimetrySVGUtils.generateSVG({
-              type: "right_triangle_basic",
-              a,
-              b,
-              c: "?",
-              missing: "c",
-            }),
+            latex: null,
+            image: null,
             variables: { a, b },
             correctAnswer: `\\sqrt{${cSq}}`,
             distractors: [`${a + b}`, `${Math.abs(a - b)}`, `${cSq}`],
@@ -60,14 +54,8 @@ class TrianglesGenerator extends BaseGenerator {
         mode === "hypotenuse"
           ? `W trójkącie prostokątnym przyprostokątne mają długości $$${a}$$ i $$${b}$$. Przeciwprostokątna ma długość:`
           : `W trójkącie prostokątnym jedna przyprostokątna ma długość $$${a}$$, a przeciwprostokątna $$${c}$$. Druga przyprostokątna ma długość:`,
-      latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "right_triangle_basic",
-        a,
-        b,
-        c,
-        missing: mode === "hypotenuse" ? "c" : "b",
-      }),
+      latex: null,
+      image: null,
       variables: { a, b, c },
       correctAnswer: `${mode === "hypotenuse" ? c : b}`,
       distractors: [
@@ -101,13 +89,8 @@ class TrianglesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Dwa kąty trójkąta mają miary $$${a}^\\circ$$ i $$${b}^\\circ$$. Trzeci kąt tego trójkąta ma miarę:`,
-      latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "triangle_angles",
-        a,
-        b,
-        c,
-      }),
+      latex: null,
+      image: null,
       variables: { a, b, c },
       correctAnswer: `${c}^\\circ`,
       distractors: [
@@ -138,7 +121,7 @@ class TrianglesGenerator extends BaseGenerator {
       return this.createResponse({
         question: `Oblicz wysokość trójkąta równobocznego o boku $$${a}$$.`,
         latex: null,
-        image: PlanimetrySVGUtils.generateSVG({ type: "equilateral", a }),
+        image: null,
         variables: { a },
         correctAnswer: `${hCoeff}\\sqrt{3}`,
         distractors: [`${a}\\sqrt{3}`, `${a / 2}`, `${a * a}\\sqrt{3}`],
@@ -282,12 +265,9 @@ class TrianglesGenerator extends BaseGenerator {
   generateIsoscelesAngles() {
     const base = this.difficulty === "easy" ? 70 : MathUtils.randomInt(20, 80);
     return this.createResponse({
-      question: `Kąt przy podstawie to $$${base}^\\circ$$. Kąt wierzchołka:`,
-      latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "isosceles",
-        baseAngle: base,
-      }),
+      question: `Kąt przy podstawie trójkąta równoramiennego wynosi $$${base}^\\circ$$. W takim razie kąt przy wierzchołku jest równy:`,
+      latex: null,
+      image: null,
       variables: { base },
       correctAnswer: `${180 - 2 * base}^\\circ`,
       distractors: [
@@ -306,16 +286,15 @@ class TrianglesGenerator extends BaseGenerator {
     ]);
     return this.createResponse({
       question: `W trójkącie prostokątnym o bokach $$${a}, ${b}, ${c}$$ wartość $$\\sin\\alpha$$ (naprzeciw $$${a}$$) wynosi:`,
-      latex: ``,
-      image: PlanimetrySVGUtils.generateSVG({
-        type: "right_triangle",
-        a,
-        b,
-        c,
-      }),
+      latex: null,
+      image: null,
       variables: { a, b, c },
       correctAnswer: `\\frac{${a}}{${c}}`,
-      distractors: [`\\frac{${b}}{${c}}`, `\\frac{${a}}{${b}}`],
+      distractors: [
+        `\\frac{${b}}{${c}}`,
+        `\\frac{${a}}{${b}}`,
+        `\\frac{${c}}{${a}}`,
+      ],
       steps: [`Definicja sinusa.`],
     });
   }
