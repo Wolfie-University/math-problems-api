@@ -33,9 +33,9 @@ class NumbersGenerator extends BaseGenerator {
       variables: { p, originalPrice, finalPrice },
       correctAnswer: `${originalPrice} zł`,
       distractors: [
-        `${(finalPrice * (1 + p / 100)).toFixed(2).replace(".00", "")} zł`,
+        `${(finalPrice * (1 + p / 100)).toFixed(2).replace(".00", "") + 5} zł`,
         `${originalPrice - 10} zł`,
-        `${(finalPrice + p).toFixed(2).replace(".00", "")} zł`,
+        `${(finalPrice + p).toFixed(2).replace(".00", "") - 5} zł`,
       ],
       steps: [
         `$$(100\\% - ${p}\\%)x = ${finalPriceStr} \\implies ${(100 - p) / 100}x = ${finalPriceStr} \\implies x = ${originalPrice}$$`,
@@ -176,7 +176,7 @@ class NumbersGenerator extends BaseGenerator {
         `Rozkładamy na czynniki i stosujemy algorytm Euklidesa lub własność $$NWD \\cdot NWW = a \\cdot b$$.`,
       ],
       questionType: "open",
-      answerFormat: `${symbol}=(a, b)`,
+      answerFormat: `number`,
     });
   }
 
