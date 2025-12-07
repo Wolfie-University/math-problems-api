@@ -29,8 +29,8 @@ class LinearFunctionGenerator extends BaseGenerator {
     const formula = this.formatLinear(a, b);
 
     return this.createResponse({
-      question: `Wyznacz miejsce zerowe funkcji liniowej określonej wzorem $$f(x) = ${formula}$$`,
-      latex: null,
+      question: `Wyznacz miejsce zerowe funkcji liniowej określonej wzorem:`,
+      latex: `f(x) = ${formula}`,
       image: null,
       variables: { a, b, root },
       correctAnswer: `${root}`,
@@ -47,15 +47,6 @@ class LinearFunctionGenerator extends BaseGenerator {
   }
 
   generateLinearGraphAnalysis() {
-    let rangeA, rangeB;
-    if (this.difficulty === "easy") {
-      rangeA = [-2, 2];
-      rangeB = [-3, 3];
-    } else {
-      rangeA = [-0.5, 0.5];
-      rangeB = [-1, 1];
-    }
-
     let a = MathUtils.randomElement([-2, -1, 1, 2]);
     if (this.difficulty === "hard") a = MathUtils.randomElement([-0.5, 0.5]);
 
@@ -63,11 +54,13 @@ class LinearFunctionGenerator extends BaseGenerator {
 
     const aSign = a > 0 ? ">" : "<";
     const bSign = b > 0 ? ">" : "<";
-    const correct = `$$a ${aSign} 0$$ i $$b ${bSign} 0$$`;
+    const correct = `a ${aSign} 0 \\quad \\text{i} \\quad b ${bSign} 0`;
 
-    const wrong1 = `$$a ${aSign === ">" ? "<" : ">"} 0$$ i $$b ${bSign} 0$$`;
-    const wrong2 = `$$a ${aSign} 0$$ i $$b ${bSign === ">" ? "<" : ">"} 0$$`;
-    const wrong3 = `$$a ${aSign === ">" ? "<" : ">"} 0$$ i $$b ${bSign === ">" ? "<" : ">"} 0$$`;
+    const wrong1 = `a ${aSign === ">" ? "<" : ">"} 0 \\quad \\text{i} \\quad b ${bSign} 0`;
+
+    const wrong2 = `a ${aSign} 0 \\quad \\text{i} \\quad b ${bSign === ">" ? "<" : ">"} 0`;
+
+    const wrong3 = `a ${aSign === ">" ? "<" : ">"} 0 \\quad \\text{i} \\quad b ${bSign === ">" ? "<" : ">"} 0`;
 
     return this.createResponse({
       question:
