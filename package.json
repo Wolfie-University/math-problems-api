@@ -1,12 +1,11 @@
 {
-    "name": "math-problems-api",
-    "version": "2.0.0",
+    "name": "matura-engine",
+    "version": "1.2.0",
     "author": "Szymon Wilczek",
     "description": "A free REST API for generating math problems in polish language.",
     "license": "MIT",
     "scripts": {
         "start": "node index.js",
-        "publish": "echo 'No publishing required for a standalone Express.js app.'"
     },
     "dependencies": {
         "cors": "^2.8.5",
