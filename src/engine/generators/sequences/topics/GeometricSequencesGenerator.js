@@ -72,7 +72,7 @@ class GeometricSequencesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Oblicz sumę $$${n}$$ początkowych wyrazów ciągu geometrycznego, w którym $$a_1 = ${a1}$$ oraz iloraz $$q = ${q}$$.`,
-      latex: `a_1=${a1}, q=${q}`,
+      latex: null,
       image: null,
       variables: { a1, q, n },
       correctAnswer: `${sum}`,
@@ -117,7 +117,7 @@ class GeometricSequencesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `W ciągu geometrycznym $$(a_n)$$ dane są wyrazy $$a_{${k}} = ${valK}$$ oraz $$a_{${m}} = ${valM}$$. Iloraz $$q$$ tego ciągu jest równy:`,
-      latex: `a_{${k}}=${valK}, a_{${m}}=${valM}`,
+      latex: null,
       image: null,
       variables: { k, m, q, valK, valM },
       correctAnswer: `${q}`,
@@ -157,13 +157,37 @@ class GeometricSequencesGenerator extends BaseGenerator {
     const t2 = `x + ${a}`;
     const t3 = `x + ${b}`;
 
+    const candidates = [x + a, a, x - 1, x + 1, b, Math.abs(x - a), x * 2];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(x);
+
+    for (const val of candidates) {
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let offset = 2;
+    while (uniqueDistractors.length < 3) {
+      const val = x + offset;
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      offset = offset > 0 ? -offset : -offset + 1;
+    }
+
     return this.createResponse({
       question: `Ciąg $$(${t1}, ${t2}, ${t3})$$ jest geometryczny. Wtedy i tylko wtedy kiedy $$x$$ wynosi:`,
       latex: ``,
       image: null,
       variables: { x, a, b },
       correctAnswer: `${x}`,
-      distractors: [`${x + a}`, `${x - 1}`, `${a}`],
+      distractors: uniqueDistractors,
       steps: [
         `Środkowy do kwadratu = iloczyn skrajnych.`,
         `$$(${t2})^2 = x \\cdot (${t3})$$`,

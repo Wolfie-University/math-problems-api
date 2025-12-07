@@ -66,13 +66,17 @@ class EquationsAndInequalitiesGenerator extends BaseGenerator {
     const condition = a > 0 ? "k >" : "k <";
     return this.createResponse({
       question: `Równanie $$${MathUtils.formatPolynomial(a, b, c)} = k$$ ma dwa rozwiązania dla:`,
-      latex: ``,
-      image: SVGUtils.generateSVG({ a, b, c, p, q, highlight: "vertex" }),
+      latex: null,
+      image: null,
       variables: { q },
       correctAnswer: `k \\in (${condition === "k >" ? `${q}, \\infty` : `-\\infty, ${q}`})`,
       distractors: [`k = ${q}`, `k \\in R`, `k > ${p}`],
       steps: [
-        `Wierzchołek $$q=${q}$$. Dwa rozwiązania gdy prosta przecina ramiona.`,
+        `Dwa rozwiązania gdy delta jest większa niż zero.`,
+        `Delta: $$\\Delta = b^2 - 4a(c - k)$$`,
+        `Delta: $$\\Delta = ${b * b} - 4 \\cdot ${a} \\cdot (${c} - k)`,
+        `Warunek: $$${b * b} - 4 \\cdot ${a} \\cdot (${c} - k) > 0$$`,
+        `Rozwiązując nierówność względem k, otrzymujemy: $$k \\in (${condition === "k >" ? `${q}, \\infty` : `-\\infty, ${q}`})$$`,
       ],
       questionType: "closed",
     });
@@ -190,16 +194,49 @@ class EquationsAndInequalitiesGenerator extends BaseGenerator {
     const b = -a * (x1 + x2);
     const c = a * x1 * x2;
 
-    const formula = `f(x)=${a === 1 ? "" : a}(x${x1 > 0 ? "-" : "+"}${Math.abs(x1)})(x${x2 > 0 ? "-" : "+"}${Math.abs(x2)})`;
+    const candidates = [-b, c, a, -(x1 + x2), x1 + x2, b + a, b - a];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(b);
+
+    for (const val of candidates) {
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let offset = 1;
+    while (uniqueDistractors.length < 3) {
+      const val = b + offset;
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      offset = offset > 0 ? -offset : -offset + 1;
+    }
+
+    const formula = `f(x)=${a === 1 ? "" : a === -1 ? "-" : a}(x${x1 > 0 ? "-" : "+"}${Math.abs(x1)})(x${x2 > 0 ? "-" : "+"}${Math.abs(x2)})`;
+
+    const innerB = -(x1 + x2);
+    const innerC = x1 * x2;
+    const innerPoly = `x^2 ${innerB >= 0 ? "+" : ""}${innerB}x ${innerC >= 0 ? "+" : ""}${innerC}`;
 
     return this.createResponse({
-      question: `Funkcja $$${formula}$$. Współczynnik b we wzorze ogólnym:`,
-      latex: ``,
+      question: `Funkcja kwadratowa jest dana wzorem: $$${formula}$$. Współczynnik b we wzorze ogólnym wynosi:`,
+      latex: null,
       image: null,
       variables: {},
       correctAnswer: `${b}`,
-      distractors: [`${c}`, `${-b}`, `${a}`],
-      steps: [`Wymnażamy nawiasy.`],
+      distractors: uniqueDistractors,
+      steps: [
+        `Wymnażamy nawiasy: $$(x${x1 > 0 ? "-" : "+"}${Math.abs(x1)})(x${x2 > 0 ? "-" : "+"}${Math.abs(x2)}) = ${innerPoly}$$`,
+        `Mnożymy całość przez $$a=${a}$$:`,
+        `$$f(x) = ${a}(${innerPoly}) = ${a}x^2 ${b >= 0 ? "+" : ""}${b}x ${c >= 0 ? "+" : ""}${c}$$`,
+        `Współczynnik przy $$x$$ to $$b = ${b}$$`,
+      ],
       questionType: "closed",
     });
   }

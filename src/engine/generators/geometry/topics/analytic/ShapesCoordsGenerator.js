@@ -174,18 +174,50 @@ class ShapesCoordsGenerator extends BaseGenerator {
 
     const area = 0.5 * base * h;
 
+    const candidates = [
+      area * 2,
+      base + h,
+      area + 2,
+      area - 2,
+      Math.abs(area - 1),
+      (base * h) / 4,
+      base * h + 2,
+    ];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(area);
+
+    for (const val of candidates) {
+      if (val > 0 && !usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let offset = 1;
+    while (uniqueDistractors.length < 3) {
+      const val = area + offset;
+      if (val > 0 && !usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+    }
+
     return this.createResponse({
       question: `Oblicz pole trójkąta o wierzchołkach $$A(${x1},${y1})$$, $$B(${x2},${y2})$$, $$C(${x3},${y3})$$.`,
       latex: null,
       image: null,
       variables: { area },
       correctAnswer: `${area}`,
-      distractors: [`${area * 2}`, `${area + 2}`, `${base + h}`],
+      distractors: uniqueDistractors,
       steps: [
         isHorizontal
           ? `Podstawa AB pozioma, długość ${base}. Wysokość h=${h}. Pole = ${area}.`
           : `Podstawa AB pionowa, długość ${base}. Wysokość h=${h}. Pole = ${area}.`,
       ],
+      questionType: "closed",
     });
   }
 }

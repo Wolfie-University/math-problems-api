@@ -40,7 +40,7 @@ class LinesGenerator extends BaseGenerator {
     return this.createResponse({
       question: "Podaj równanie prostej przechodzącej przez punkty:",
       latex: `A=(${A.x}, ${A.y}), B=(${B.x}, ${B.y})`,
-      image: AnalyticSVGUtils.generateSVG({ type: "line", A, B }),
+      image: null,
       variables: { A, B, a, b },
       correctAnswer: `y = ${eq}`,
       distractors: [
@@ -95,7 +95,7 @@ class LinesGenerator extends BaseGenerator {
     const eq2 = this.formatLineEquation(a2, b2);
 
     return this.createResponse({
-      question: `Wyznacz równanie prostej l przechodzącej przez punkt $$P=(${P.x}, ${P.y})$$ i ${mode === "parallel" ? "równoległej" : "prostopadłej"} do prostej $$k$$:`,
+      question: `Wyznacz równanie prostej $$l$$ przechodzącej przez punkt $$P=(${P.x}, ${P.y})$$ i ${mode === "parallel" ? "równoległej" : "prostopadłej"} do prostej $$k$$:`,
       latex: `k: y=${eq1}`,
       image: null,
       variables: { a2, b2 },
@@ -217,6 +217,7 @@ class LinesGenerator extends BaseGenerator {
     }
 
     const sel = MathUtils.randomElement(availableAngles);
+    const angle = sel.ang;
     const b = MathUtils.randomInt(-4, 4);
 
     const aStr = sel.tan;
@@ -228,17 +229,49 @@ class LinesGenerator extends BaseGenerator {
           ? `-x ${bStr}`
           : `${aStr}x ${bStr}`;
 
+    const candidates = [
+      180 - angle,
+      Math.abs(90 - angle),
+      angle > 90 ? angle - 90 : angle + 90,
+      angle + 30,
+      angle - 30,
+      180 - (angle + 30),
+      30,
+      45,
+      60,
+      120,
+      135,
+      150,
+    ];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(angle);
+
+    for (const cand of candidates) {
+      if (!usedValues.has(cand) && cand > 0 && cand < 180) {
+        uniqueDistractors.push(`${cand}^\\circ`);
+        usedValues.add(cand);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let fallbackAngle = 10;
+    while (uniqueDistractors.length < 3) {
+      if (!usedValues.has(fallbackAngle)) {
+        uniqueDistractors.push(`${fallbackAngle}^\\circ`);
+        usedValues.add(fallbackAngle);
+      }
+      fallbackAngle += 10;
+    }
+
     return this.createResponse({
       question: `Prosta o równaniu $$y = ${eq}$$ tworzy z osią $$Ox$$ kąt $$\\alpha$$. Miara tego kąta jest równa:`,
       latex: ``,
       image: null,
       variables: { angle: sel.ang, a_latex: sel.tan },
       correctAnswer: `${sel.ang}^\\circ`,
-      distractors: [
-        `${180 - sel.ang}^\\circ`,
-        `${90 - sel.ang}^\\circ`,
-        `${sel.ang > 90 ? sel.ang - 90 : sel.ang + 30}^\\circ`,
-      ],
+      distractors: uniqueDistractors,
       steps: [
         `Współczynnik kierunkowy $$a = \\tg\\alpha$$.`,
         `$$a = ${sel.tan} \\implies \\alpha = ${sel.ang}^\\circ$$`,
@@ -253,13 +286,38 @@ class LinesGenerator extends BaseGenerator {
     const x = MathUtils.randomInt(-4, 4);
     const y = a * x + b;
     const eq = this.formatLineEquation(a, b);
+
+    const candidates = [-y, x, a * x, b, y + 1, y - 1, a + b];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(y);
+
+    for (const cand of candidates) {
+      if (!usedValues.has(cand)) {
+        uniqueDistractors.push(`${cand}`);
+        usedValues.add(cand);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let offset = 2;
+    while (uniqueDistractors.length < 3) {
+      const val = y + offset;
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      offset = offset > 0 ? -offset : -offset + 1;
+    }
+
     return this.createResponse({
       question: `Punkt $$P=(${x}, m)$$ należy do wykresu funkcji liniowej $$y=${eq}$$. Liczba $$m$$ jest równa:`,
       latex: null,
       image: null,
       variables: { a, b, x, m_val: y },
       correctAnswer: `${y}`,
-      distractors: [`${-y}`, `${x}`, `${a * x}`],
+      distractors: uniqueDistractors,
       steps: [
         `Podstawiamy $$x=${x}$$ do wzoru:`,
         `$$m = ${a}\\cdot(${x}) ${b >= 0 ? "+" : ""}${b} = ${y}$$`,
@@ -303,26 +361,82 @@ class LinesGenerator extends BaseGenerator {
   }
 
   generatePerpendicularCoeff() {
-    const num = MathUtils.randomElement([1, 2, 3]);
-    const den = MathUtils.randomElement([2, 3, 4, 5]);
+    let num = MathUtils.randomInt(1, 5);
+    let den = MathUtils.randomInt(1, 5);
+
+    const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+    const common = gcd(num, den);
+    num /= common;
+    den /= common;
+
     const sign = MathUtils.randomElement([1, -1]);
-    const a1_latex =
-      (sign < 0 ? "-" : "") +
-      (num === 1 && den === 1 ? "1" : `\\frac{${num}}{${den}}`);
-    const a2_latex = (sign < 0 ? "" : "-") + `\\frac{${den}}{${num}}`;
+
+    const formatForEquation = (n, d, s) => {
+      if (d === 1) {
+        if (n === 1) return s === 1 ? "" : "-"; // 1 -> "", -1 -> "-"
+        return s === 1 ? `${n}` : `-${n}`;
+      }
+      return (s === 1 ? "" : "-") + `\\frac{${n}}{${d}}`;
+    };
+
+    const formatValue = (n, d, s) => {
+      if (d === 1) {
+        return s === 1 ? `${n}` : `-${n}`;
+      }
+      return (s === 1 ? "" : "-") + `\\frac{${n}}{${d}}`;
+    };
+
+    const a1_eq_latex = formatForEquation(num, den, sign);
+    const a1_val_latex = formatValue(num, den, sign);
+
+    const num2 = den;
+    const den2 = num;
+    const sign2 = -sign;
+    const a2_val_latex = formatValue(num2, den2, sign2);
+
+    const candidates = [
+      a1_val_latex,
+      formatValue(num, den, -sign),
+      formatValue(num2, den2, sign),
+      "1",
+      "-1",
+    ];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(a2_val_latex);
+
+    for (const cand of candidates) {
+      if (!usedValues.has(cand)) {
+        uniqueDistractors.push(cand);
+        usedValues.add(cand);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let fallbackNum = 2;
+    while (uniqueDistractors.length < 3) {
+      const val = `${fallbackNum}`;
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(val);
+        usedValues.add(val);
+      }
+      fallbackNum++;
+    }
+
     return this.createResponse({
-      question: `Współczynnik kierunkowy prostej prostopadłej do prostej $$y = ${a1_latex}x + 5$$ jest równy:`,
+      question: `Współczynnik kierunkowy prostej prostopadłej do prostej $$y = ${a1_eq_latex}x + 5$$ jest równy:`,
       latex: ``,
       image: null,
       variables: {},
-      correctAnswer: a2_latex,
-      distractors: [
-        a1_latex,
-        (sign < 0 ? "" : "-") +
-          (num === 1 && den === 1 ? "1" : `\\frac{${num}}{${den}}`),
-        (sign < 0 ? "-" : "") + `\\frac{${den}}{${num}}`,
+      correctAnswer: a2_val_latex,
+      distractors: uniqueDistractors,
+      steps: [
+        `Współczynnik kierunkowy danej prostej to $$a_1 = ${a1_val_latex}$$.`,
+        `Warunkiem prostopadłości prostych jest $$a_1 \\cdot a_2 = -1$$.`,
+        `Szukamy $$a_2$$:`,
+        `$$a_2 = -\\frac{1}{a_1} = -\\frac{1}{${a1_val_latex}} = ${a2_val_latex}$$`,
       ],
-      steps: [`$$a_1 \\cdot a_2 = -1$$`],
       questionType: "closed",
     });
   }

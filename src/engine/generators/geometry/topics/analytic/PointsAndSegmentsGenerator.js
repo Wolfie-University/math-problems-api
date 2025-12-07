@@ -30,10 +30,9 @@ class PointsAndSegmentsGenerator extends BaseGenerator {
       : `\\sqrt{${lengthSquared}}`;
 
     return this.createResponse({
-      question:
-        "Dane są punkty $$A=(${A.x}, ${A.y})$$ i $$B=(${B.x}, ${B.y})$$. Oblicz środek i długość odcinka.",
+      question: `Dane są punkty $$A=(${A.x}, ${A.y})$$ i $$B=(${B.x}, ${B.y})$$. Oblicz środek i długość odcinka.`,
       latex: null,
-      image: AnalyticSVGUtils.generateSVG({ type: "segment", A, B, S }),
+      image: null,
       variables: { A, B, S },
       correctAnswer: `S=(${S.x}, ${S.y}), |AB|=${lengthStr}`,
       distractors: [
@@ -68,8 +67,7 @@ class PointsAndSegmentsGenerator extends BaseGenerator {
     const B = { x: 2 * S.x - A.x, y: 2 * S.y - A.y };
 
     return this.createResponse({
-      question:
-        "Punkt $$S=(${S.x}$$ jest środkiem odcinka AB. Wiedząc, że $$A=(${A.x}, ${A.y})$$ oblicz B.",
+      question: `Punkt $$S=(${S.x}, ${S.y})$$ jest środkiem odcinka AB. Wiedząc, że $$A=(${A.x}, ${A.y})$$ oblicz B.`,
       latex: null,
       image: null,
       variables: { A, B, S },
@@ -87,8 +85,9 @@ class PointsAndSegmentsGenerator extends BaseGenerator {
 
   generateDistanceUnknownCoord() {
     // |AB| = d. A=(x1, y1), B=(x2, m).
-    const x1 = 1,
-      y1 = 2;
+    const x1 = 1;
+    const y1 = 2;
+
     let triples;
 
     if (this.difficulty === "easy") {
@@ -100,34 +99,62 @@ class PointsAndSegmentsGenerator extends BaseGenerator {
       triples = [
         [5, 12, 13],
         [8, 15, 17],
-        [1, 1, Math.sqrt(2)],
+        [7, 24, 25],
       ];
     }
 
-    if (this.difficulty === "hard")
-      triples = [
-        [5, 12, 13],
-        [8, 15, 17],
-      ];
-
     const triple = MathUtils.randomElement(triples);
-    const dx = triple[0];
-    const dy = triple[1];
+    const swap = Math.random() > 0.5;
+    const dx = swap ? triple[1] : triple[0];
+    const dy = swap ? triple[0] : triple[1];
     const d = triple[2];
 
     const x2 = x1 + dx;
-    const m = y1 + dy;
 
-    const dStr = Number.isInteger(d) ? `${d}` : d.toFixed(2);
+    const targetDy = Math.random() > 0.5 ? dy : -dy;
+    const m = y1 + targetDy;
+
+    const candidates = [y1 - targetDy, m + 2, m - 2, y1, x2, d, m + dy, 0];
+
+    const uniqueDistractors = [];
+    const usedValues = new Set();
+    usedValues.add(m);
+
+    for (const cand of candidates) {
+      if (!usedValues.has(cand)) {
+        uniqueDistractors.push(`${cand}`);
+        usedValues.add(cand);
+      }
+      if (uniqueDistractors.length === 3) break;
+    }
+
+    let offset = 1;
+    while (uniqueDistractors.length < 3) {
+      const val = m + offset;
+      if (!usedValues.has(val)) {
+        uniqueDistractors.push(`${val}`);
+        usedValues.add(val);
+      }
+      offset = offset > 0 ? -offset : -offset + 1;
+    }
 
     return this.createResponse({
-      question: `Punkty $$A=(${x1}, ${y1})$$ i $$B=(${x2}, m)$$ są odległe o $$${dStr}$$. Jedną z możliwych wartości $$m$$ jest:`,
+      question: `Punkty $$A=(${x1}, ${y1})$$ i $$B=(${x2}, m)$$ są odległe o $$${d}$$. Jedną z możliwych wartości $$m$$ jest:`,
       latex: null,
       image: null,
       variables: { m, d },
       correctAnswer: `${m}`,
-      distractors: [`${m + 2}`, `${y1}`, `${x2}`],
-      steps: [`$$|AB| = \\sqrt{(x_2-x_1)^2 + (m-y_1)^2} = ${dStr}$$`],
+      distractors: uniqueDistractors,
+      steps: [
+        `Wzór na długość odcinka: $$|AB| = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$$`,
+        `Podstawiamy dane: $$${d} = \\sqrt{(${x2}-${x1})^2 + (m-${y1})^2}$$`,
+        `$$${d}^2 = ${dx}^2 + (m-${y1})^2$$`,
+        `$$${d * d} = ${dx * dx} + (m-${y1})^2$$`,
+        `$$(m-${y1})^2 = ${dy * dy} \\implies |m-${y1}| = ${dy}$$`,
+        `$$m-${y1} = ${dy} \\lor m-${y1} = -${dy}$$`,
+        `$$m = ${y1 + dy} \\lor m = ${y1 - dy}$$`,
+        `Jedną z wartości jest $$m=${m}$$`,
+      ],
       questionType: "closed",
     });
   }
