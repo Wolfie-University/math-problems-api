@@ -30,7 +30,7 @@ class VertexAndRootsGenerator extends BaseGenerator {
       question:
         "Wyznacz współrzędne wierzchołka paraboli będącej wykresem funkcji:",
       latex: formula,
-      image: SVGUtils.generateSVG({ a, b, c, p, q, highlight: "vertex" }),
+      image: null,
       variables: { a, b, c, p, q },
       correctAnswer: `W(${p}, ${q})`,
       distractors: [`W(${-p}, ${q})`, `W(${q}, ${p})`, `W(${p}, ${c})`],
@@ -122,8 +122,8 @@ class VertexAndRootsGenerator extends BaseGenerator {
     const { a, b, c, p } = this.generateCoefficients();
     return this.createResponse({
       question: `Osią symetrii wykresu funkcji $$f(x) = ${MathUtils.formatPolynomial(a, b, c)}$$ jest prosta:`,
-      latex: ``,
-      image: SVGUtils.generateSVG({ a, b, c, p, q: 0, highlight: "axis" }),
+      latex: null,
+      image: null,
       variables: { a, b, c, p },
       correctAnswer: `x = ${p}`,
       distractors: [`x = ${-p}`, `y = ${p}`, `x = ${b}`],

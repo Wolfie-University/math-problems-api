@@ -29,7 +29,7 @@ class PropertiesGenerator extends BaseGenerator {
     return this.createResponse({
       question: "Wyznacz zbiór wartości funkcji:",
       latex: `f(x) = ${MathUtils.formatPolynomial(a, b, c)}`,
-      image: SVGUtils.generateSVG({ a, b, c, p, q, highlight: "vertex" }),
+      image: null,
       variables: { a, b, c, p, q },
       correctAnswer: range,
       distractors: [
@@ -82,8 +82,8 @@ class PropertiesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Funkcja kwadratowa $$f(x) = ${MathUtils.formatPolynomial(a, b, c)}$$ jest ${type} w przedziale:`,
-      latex: ``,
-      image: SVGUtils.generateSVG({ a, b, c, p, q, highlight: "vertex" }),
+      latex: null,
+      image: null,
       variables: { a, p, type },
       correctAnswer: interval,
       distractors: [

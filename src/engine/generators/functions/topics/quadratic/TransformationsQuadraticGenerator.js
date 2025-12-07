@@ -43,7 +43,7 @@ class TransformationsQuadraticGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Wykres funkcji $$f(x)=${formulaBase}$$ przesunięto o wektor $$v=[${p}, ${q}]$$. Jaki jest nowy wzór funkcji?`,
-      latex: `v=[${p}, ${q}]`,
+      latex: null,
       image: null,
       variables: { a, p, q },
       correctAnswer: `g(x) = ${formulaNew}`,

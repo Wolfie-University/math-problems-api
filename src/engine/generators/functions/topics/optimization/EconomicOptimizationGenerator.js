@@ -109,13 +109,7 @@ class EconomicOptimizationGenerator extends BaseGenerator {
     return this.createResponse({
       question: questionText,
       latex: `P(x) = (${startPrice} - x)(${startSales} + ${stepSales}x)`,
-      image: this.generateParabolaSVG(
-        startPrice,
-        startSales,
-        stepSales,
-        x,
-        maxRevenue,
-      ),
+      image: null,
       variables: { startPrice, startSales, stepSales, optimalX: x },
       correctAnswer:
         scenario.id === "hotel" || scenario.id === "electronics"
@@ -186,14 +180,7 @@ class EconomicOptimizationGenerator extends BaseGenerator {
     return this.createResponse({
       question: questionText,
       latex: `Plon(x) = (${startTrees} + x)(${calculatedStartFruits} - ${lossPerTree}x)`,
-      image: this.generateParabolaSVG(
-        calculatedStartFruits,
-        startTrees,
-        lossPerTree,
-        targetX,
-        0,
-        true,
-      ),
+      image: null,
       variables: { calculatedStartFruits, startTrees, lossPerTree, targetX },
       correctAnswer: `${targetX}`,
       distractors: [

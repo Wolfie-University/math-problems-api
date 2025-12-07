@@ -57,8 +57,8 @@ class GeometricOptimizationGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Suma długości wszystkich krawędzi prostopadłościanu o podstawie kwadratowej jest równa $$${S}$$. Oblicz długość krawędzi podstawy $$x$$ tego prostopadłościanu, dla której jego pole powierzchni całkowitej jest największe.`,
-      latex: `\\text{Suma} = ${S}`,
-      image: this.generateGeometrySVG({ type: "cuboid_opt", a, h }),
+      latex: null,
+      image: null,
       variables: { S, a, h, Pc },
       correctAnswer: `x = ${a}`,
       distractors: [`x = ${a + 1}`, `x = ${a / 2}`, `x = ${S / 12 + 1}`],
@@ -89,13 +89,8 @@ class GeometricOptimizationGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Okno ma kształt trapezu równoramiennego. Dłuższa podstawa ma stałą długość $$${a}$$ dm. Suma długości krótszej podstawy i wysokości tego trapezu wynosi $$${S}$$ dm. Oblicz jaką długość powinna mieć wysokość $$h$$ tego okna, aby jego powierzchnia była największa.`,
-      latex: `a=${a}, b+h=${S}`,
-      image: this.generateGeometrySVG({
-        type: "trapezoid_opt",
-        a,
-        b: b_opt,
-        h: h_opt,
-      }),
+      latex: null,
+      image: null,
       variables: { a, S, h_opt, b_opt },
       correctAnswer: `h = ${h_opt}`,
       distractors: [`h = ${h_opt - 2}`, `h = ${b_opt}`, `h = ${S / 2}`],

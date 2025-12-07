@@ -31,7 +31,7 @@ class GeneralSequencesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Oblicz $$a_{${n}}$$ dla ciągu $$${formula}$$ (dla $$n \\ge 1$$).`,
-      latex: formula,
+      latex: null,
       image: null,
       variables: { a, b, c, n },
       correctAnswer: `${val}`,
@@ -120,11 +120,15 @@ class GeneralSequencesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Ciąg określony wzorem $$${formula}$$ jest:`,
-      latex: formula,
+      latex: null,
       image: null,
       variables: { a, b, type },
       correctAnswer: type,
-      distractors: [a > 0 ? "malejący" : "rosnący", "stały", "niemonotoniczny"],
+      distractors: [
+        a > 0 ? "\\text{malejący}" : "\\text{rosnący}",
+        "\\text{stały}",
+        "\\text{niemonotoniczny}",
+      ],
       steps: [`Różnica $$a_{n+1}-a_n = ${a}$$, więc ciąg jest ${type}.`],
       questionType: "closed",
     });
@@ -150,7 +154,7 @@ class GeneralSequencesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Ile wyrazów ciągu $$a_n = ${formula}$$ jest dodatnich?`,
-      latex: formula,
+      latex: null,
       image: null,
       variables: { x1, x2, count },
       correctAnswer: `${count}`,
@@ -172,7 +176,7 @@ class GeneralSequencesGenerator extends BaseGenerator {
 
     return this.createResponse({
       question: `Średnia arytmetyczna pięciu początkowych wyrazów ciągu arytmetycznego wynosi $$${avg}$$. Pierwszy wyraz tego ciągu to $$${a1}$$. Oblicz różnicę tego ciągu.`,
-      latex: `\\bar{x}=${avg}, a_1=${a1}`,
+      latex: null,
       image: null,
       variables: { a1, avg, r },
       correctAnswer: `${r}`,
